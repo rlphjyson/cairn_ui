@@ -1,0 +1,8 @@
+# Normalise to LF in the repository so `dart format --set-exit-if-changed`
+# behaves identically on Windows developer machines and the Linux CI runner.
+* text=auto eol=lf
+
+# Golden reference images are binary; never let them be line-ending mangled.
+*.png binary
+*.ttf binary
+*.otf binary

@@ -48,9 +48,7 @@ Widget goldenHarness({
     child: Directionality(
       textDirection: TextDirection.ltr,
       child: Theme(
-        data: CairnTheme.materialTheme(
-          theme.copyWith(fontFamily: 'Geist'),
-        ),
+        data: CairnTheme.materialTheme(theme.copyWith(fontFamily: 'Geist')),
         child: ColoredBox(
           color: _surfaceFor(theme),
           child: Padding(
@@ -58,9 +56,7 @@ Widget goldenHarness({
             child: Align(
               alignment: Alignment.topLeft,
               child: DefaultTextStyle(
-                style: theme
-                    .copyWith(fontFamily: 'Geist')
-                    .defaultTextStyle,
+                style: theme.copyWith(fontFamily: 'Geist').defaultTextStyle,
                 child: child,
               ),
             ),
@@ -85,20 +81,15 @@ Future<void> goldenPair(
   Size surfaceSize = const Size(400, 200),
   double textScale = 1.0,
 }) async {
-  for (final MapEntry<String, CairnTheme> entry
-      in <String, CairnTheme>{
-        'light': CairnTheme.light,
-        'dark': CairnTheme.dark,
-      }.entries) {
+  for (final MapEntry<String, CairnTheme> entry in <String, CairnTheme>{
+    'light': CairnTheme.light,
+    'dark': CairnTheme.dark,
+  }.entries) {
     await tester.binding.setSurfaceSize(surfaceSize);
     addTearDown(() => tester.binding.setSurfaceSize(null));
 
     await tester.pumpWidget(
-      goldenHarness(
-        theme: entry.value,
-        textScale: textScale,
-        child: child,
-      ),
+      goldenHarness(theme: entry.value, textScale: textScale, child: child),
     );
     // Settle transitions so hover/focus animations are at rest.
     await tester.pumpAndSettle();

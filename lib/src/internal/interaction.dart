@@ -44,10 +44,8 @@ class CairnStates {
 }
 
 /// Builds a widget from the current interaction states.
-typedef CairnStateBuilder = Widget Function(
-  BuildContext context,
-  CairnStates states,
-);
+typedef CairnStateBuilder =
+    Widget Function(BuildContext context, CairnStates states);
 
 /// Wires pointer, focus and keyboard interaction for a Cairn component.
 ///

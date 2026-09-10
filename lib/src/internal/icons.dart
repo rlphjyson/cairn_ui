@@ -88,8 +88,7 @@ class CairnIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final IconThemeData iconTheme = IconTheme.of(context);
-    final Color resolved =
-        color ?? iconTheme.color ?? const Color(0xFF000000);
+    final Color resolved = color ?? iconTheme.color ?? const Color(0xFF000000);
     return SizedBox(
       width: size,
       height: size,
@@ -135,78 +134,111 @@ class _CairnIconPainter extends CustomPainter {
 
     switch (icon) {
       case CairnIconData.check:
-        canvas.drawPath(_poly(<Offset>[
-          const Offset(20, 6),
-          const Offset(9, 17),
-          const Offset(4, 12),
-        ]), stroke);
+        canvas.drawPath(
+          _poly(<Offset>[
+            const Offset(20, 6),
+            const Offset(9, 17),
+            const Offset(4, 12),
+          ]),
+          stroke,
+        );
 
       case CairnIconData.chevronDown:
-        canvas.drawPath(_poly(<Offset>[
-          const Offset(6, 9),
-          const Offset(12, 15),
-          const Offset(18, 9),
-        ]), stroke);
+        canvas.drawPath(
+          _poly(<Offset>[
+            const Offset(6, 9),
+            const Offset(12, 15),
+            const Offset(18, 9),
+          ]),
+          stroke,
+        );
 
       case CairnIconData.chevronUp:
-        canvas.drawPath(_poly(<Offset>[
-          const Offset(18, 15),
-          const Offset(12, 9),
-          const Offset(6, 15),
-        ]), stroke);
+        canvas.drawPath(
+          _poly(<Offset>[
+            const Offset(18, 15),
+            const Offset(12, 9),
+            const Offset(6, 15),
+          ]),
+          stroke,
+        );
 
       case CairnIconData.chevronLeft:
-        canvas.drawPath(_poly(<Offset>[
-          const Offset(15, 18),
-          const Offset(9, 12),
-          const Offset(15, 6),
-        ]), stroke);
+        canvas.drawPath(
+          _poly(<Offset>[
+            const Offset(15, 18),
+            const Offset(9, 12),
+            const Offset(15, 6),
+          ]),
+          stroke,
+        );
 
       case CairnIconData.chevronRight:
-        canvas.drawPath(_poly(<Offset>[
-          const Offset(9, 18),
-          const Offset(15, 12),
-          const Offset(9, 6),
-        ]), stroke);
+        canvas.drawPath(
+          _poly(<Offset>[
+            const Offset(9, 18),
+            const Offset(15, 12),
+            const Offset(9, 6),
+          ]),
+          stroke,
+        );
 
       case CairnIconData.chevronsUpDown:
         canvas
-          ..drawPath(_poly(<Offset>[
-            const Offset(7, 15),
-            const Offset(12, 20),
-            const Offset(17, 15),
-          ]), stroke)
-          ..drawPath(_poly(<Offset>[
-            const Offset(7, 9),
-            const Offset(12, 4),
-            const Offset(17, 9),
-          ]), stroke);
+          ..drawPath(
+            _poly(<Offset>[
+              const Offset(7, 15),
+              const Offset(12, 20),
+              const Offset(17, 15),
+            ]),
+            stroke,
+          )
+          ..drawPath(
+            _poly(<Offset>[
+              const Offset(7, 9),
+              const Offset(12, 4),
+              const Offset(17, 9),
+            ]),
+            stroke,
+          );
 
       case CairnIconData.chevronsLeft:
         canvas
-          ..drawPath(_poly(<Offset>[
-            const Offset(11, 17),
-            const Offset(6, 12),
-            const Offset(11, 7),
-          ]), stroke)
-          ..drawPath(_poly(<Offset>[
-            const Offset(18, 17),
-            const Offset(13, 12),
-            const Offset(18, 7),
-          ]), stroke);
+          ..drawPath(
+            _poly(<Offset>[
+              const Offset(11, 17),
+              const Offset(6, 12),
+              const Offset(11, 7),
+            ]),
+            stroke,
+          )
+          ..drawPath(
+            _poly(<Offset>[
+              const Offset(18, 17),
+              const Offset(13, 12),
+              const Offset(18, 7),
+            ]),
+            stroke,
+          );
 
       case CairnIconData.chevronsRight:
         canvas
-          ..drawPath(_poly(<Offset>[
-            const Offset(6, 17),
-            const Offset(11, 12),
-            const Offset(6, 7),
-          ]), stroke)
-          ..drawPath(_poly(<Offset>[
-            const Offset(13, 17),
-            const Offset(18, 12),
-            const Offset(13, 7),
-          ]), stroke);
+          ..drawPath(
+            _poly(<Offset>[
+              const Offset(6, 17),
+              const Offset(11, 12),
+              const Offset(6, 7),
+            ]),
+            stroke,
+          )
+          ..drawPath(
+            _poly(<Offset>[
+              const Offset(13, 17),
+              const Offset(18, 12),
+              const Offset(13, 7),
+            ]),
+            stroke,
+          );
 
       case CairnIconData.close:
         canvas
@@ -234,20 +266,26 @@ class _CairnIconPainter extends CustomPainter {
       case CairnIconData.arrowUp:
         canvas
           ..drawLine(const Offset(12, 19), const Offset(12, 5), stroke)
-          ..drawPath(_poly(<Offset>[
-            const Offset(5, 12),
-            const Offset(12, 5),
-            const Offset(19, 12),
-          ]), stroke);
+          ..drawPath(
+            _poly(<Offset>[
+              const Offset(5, 12),
+              const Offset(12, 5),
+              const Offset(19, 12),
+            ]),
+            stroke,
+          );
 
       case CairnIconData.arrowDown:
         canvas
           ..drawLine(const Offset(12, 5), const Offset(12, 19), stroke)
-          ..drawPath(_poly(<Offset>[
-            const Offset(19, 12),
-            const Offset(12, 19),
-            const Offset(5, 12),
-          ]), stroke);
+          ..drawPath(
+            _poly(<Offset>[
+              const Offset(19, 12),
+              const Offset(12, 19),
+              const Offset(5, 12),
+            ]),
+            stroke,
+          );
 
       case CairnIconData.alert:
         canvas
@@ -258,11 +296,14 @@ class _CairnIconPainter extends CustomPainter {
       case CairnIconData.circleCheck:
         canvas
           ..drawCircle(const Offset(12, 12), 10, stroke)
-          ..drawPath(_poly(<Offset>[
-            const Offset(9, 12),
-            const Offset(11, 14),
-            const Offset(15, 10),
-          ]), stroke);
+          ..drawPath(
+            _poly(<Offset>[
+              const Offset(9, 12),
+              const Offset(11, 14),
+              const Offset(15, 10),
+            ]),
+            stroke,
+          );
 
       case CairnIconData.info:
         canvas
