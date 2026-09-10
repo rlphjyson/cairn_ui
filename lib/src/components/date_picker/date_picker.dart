@@ -41,6 +41,7 @@ class CairnDatePicker extends StatefulWidget {
     this.format,
     this.firstDate,
     this.lastDate,
+    this.initialMonth,
     this.width = 240.0,
     this.hasError = false,
   });
@@ -62,6 +63,12 @@ class CairnDatePicker extends StatefulWidget {
 
   /// The latest selectable date.
   final DateTime? lastDate;
+
+  /// The month the calendar opens on when nothing is selected.
+  ///
+  /// Defaults to the current month. Set this to make the picker deterministic
+  /// in tests, or to open on a business-relevant month.
+  final DateTime? initialMonth;
 
   /// The trigger width.
   final double width;
@@ -178,6 +185,7 @@ class _CairnDatePickerState extends State<CairnDatePicker> {
         padding: const EdgeInsets.all(CairnSpacing.s3),
         child: CairnCalendar(
           selected: widget.value,
+          initialMonth: widget.initialMonth,
           firstDate: widget.firstDate,
           lastDate: widget.lastDate,
           onChanged: (DateTime d) {

@@ -66,20 +66,29 @@ class _CairnSpinnerState extends State<CairnSpinner>
         DefaultTextStyle.of(context).style.color ??
         theme.foreground;
 
+    // Honour the platform's reduce-motion setting. This also makes the spinner
+    // render as a single static frame in golden tests, which would otherwise
+    // never reach a settled state.
+    final bool reduceMotion =
+        MediaQuery.maybeDisableAnimationsOf(context) ?? false;
+    if (reduceMotion && _controller.isAnimating) {
+      _controller.stop();
+    } else if (!reduceMotion && !_controller.isAnimating) {
+      _controller.repeat();
+    }
+
+    final Widget arc = CustomPaint(
+      painter: _SpinnerPainter(color: color, strokeWidth: widget.strokeWidth),
+    );
+
     return Semantics(
       label: widget.semanticLabel,
       liveRegion: true,
       child: SizedBox.square(
         dimension: widget.size,
-        child: RotationTransition(
-          turns: _controller,
-          child: CustomPaint(
-            painter: _SpinnerPainter(
-              color: color,
-              strokeWidth: widget.strokeWidth,
-            ),
-          ),
-        ),
+        child: reduceMotion
+            ? arc
+            : RotationTransition(turns: _controller, child: arc),
       ),
     );
   }

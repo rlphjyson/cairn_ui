@@ -131,11 +131,25 @@ class _CairnSliderState extends State<CairnSlider> {
     final CairnTheme theme = CairnTheme.of(context);
     final bool showRing = _enabled && (_hovered || _focused || _dragging);
 
+    // Flutter asserts that a semantics node offering increase/decrease actions
+    // alongside a `value` must also supply `increasedValue` and
+    // `decreasedValue` — screen readers announce the target of the action, not
+    // just the current state. Compute both from the same clamping logic the
+    // keyboard path uses so the announcement never disagrees with what a press
+    // actually does at the bounds.
+    String announce(double raw) {
+      final double clamped = raw.clamp(widget.min, widget.max);
+      final double f = (clamped - widget.min) / (widget.max - widget.min);
+      return '${(f * 100).round()}%';
+    }
+
     return Semantics(
       slider: true,
       enabled: _enabled,
       label: widget.semanticLabel,
-      value: '${(_fraction * 100).round()}%',
+      value: announce(widget.value),
+      increasedValue: announce(widget.value + _stepSize),
+      decreasedValue: announce(widget.value - _stepSize),
       onIncrease: _enabled ? () => _nudge(1) : null,
       onDecrease: _enabled ? () => _nudge(-1) : null,
       child: FocusableActionDetector(

@@ -186,27 +186,38 @@ class _CairnInputState extends State<CairnInput> {
                   child: widget.leading!,
                 ),
               Expanded(
-                child: TextField(
-                  controller: widget.controller,
-                  focusNode: _node,
-                  enabled: widget.enabled,
-                  readOnly: widget.readOnly,
-                  obscureText: widget.obscureText,
-                  autofocus: widget.autofocus,
-                  keyboardType: widget.keyboardType,
-                  textInputAction: widget.textInputAction,
-                  inputFormatters: widget.inputFormatters,
-                  maxLength: widget.maxLength,
-                  onChanged: widget.onChanged,
-                  onSubmitted: widget.onSubmitted,
-                  style: textStyle,
-                  cursorColor: theme.foreground,
-                  cursorWidth: 1.0,
-                  // Strip every Material affordance; this widget draws the box.
-                  decoration: InputDecoration.collapsed(
-                    hintText: widget.placeholder,
-                    hintStyle: textStyle.copyWith(color: theme.mutedForeground),
-                  ).copyWith(counterText: '', isDense: true),
+                // Material's TextField asserts on a missing Material ancestor
+                // (it needs one for its selection overlay and text-selection
+                // theming). A component library must not push that requirement
+                // onto consumers, so each Cairn text control supplies its own
+                // transparent Material — invisible, and free of any ink or
+                // elevation.
+                child: Material(
+                  type: MaterialType.transparency,
+                  child: TextField(
+                    controller: widget.controller,
+                    focusNode: _node,
+                    enabled: widget.enabled,
+                    readOnly: widget.readOnly,
+                    obscureText: widget.obscureText,
+                    autofocus: widget.autofocus,
+                    keyboardType: widget.keyboardType,
+                    textInputAction: widget.textInputAction,
+                    inputFormatters: widget.inputFormatters,
+                    maxLength: widget.maxLength,
+                    onChanged: widget.onChanged,
+                    onSubmitted: widget.onSubmitted,
+                    style: textStyle,
+                    cursorColor: theme.foreground,
+                    cursorWidth: 1.0,
+                    // Strip every Material affordance; this widget draws the box.
+                    decoration: InputDecoration.collapsed(
+                      hintText: widget.placeholder,
+                      hintStyle: textStyle.copyWith(
+                        color: theme.mutedForeground,
+                      ),
+                    ).copyWith(counterText: '', isDense: true),
+                  ),
                 ),
               ),
               if (widget.trailing != null)

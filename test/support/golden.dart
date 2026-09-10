@@ -29,6 +29,24 @@ bool get goldensEnabled =>
 /// fill, the dark theme's translucent borders).
 Color _surfaceFor(CairnTheme theme) => theme.background;
 
+/// Advances to a stable frame without using `pumpAndSettle`.
+///
+/// `pumpAndSettle` pumps until no frame is scheduled, which **never happens**
+/// for a component with a repeating animation — the Spinner's rotation, the
+/// Skeleton's pulse, the Input OTP caret's blink and the indeterminate Progress
+/// sweep all schedule frames forever, so `pumpAndSettle` times out after ten
+/// seconds and fails the test.
+///
+/// Pumping a fixed duration instead is both robust and deterministic: every
+/// entrance transition in the library finishes within 300ms (the longest is
+/// Sheet's 500ms, which goldens do not capture), and any still-running
+/// animation is sampled at exactly the same phase on every run and every
+/// machine.
+Future<void> settleForGolden(WidgetTester tester) async {
+  await tester.pump();
+  await tester.pump(const Duration(milliseconds: 300));
+}
+
 /// Wraps [child] in a minimal, deterministic app for golden capture.
 ///
 /// Deliberately avoids [MaterialApp]'s chrome: no [Scaffold], no app bar, no
@@ -44,20 +62,37 @@ Widget goldenHarness({
   EdgeInsets padding = const EdgeInsets.all(16),
 }) {
   return MediaQuery(
-    data: MediaQueryData(textScaler: TextScaler.linear(textScale)),
+    data: MediaQueryData(
+      textScaler: TextScaler.linear(textScale),
+      // Golden images must be a single deterministic frame. Components that
+      // honour reduced motion (Skeleton's pulse, Spinner's rotation, the Input
+      // OTP caret) then render statically instead of mid-animation.
+      disableAnimations: true,
+    ),
     child: Directionality(
       textDirection: TextDirection.ltr,
-      child: Theme(
-        data: CairnTheme.materialTheme(theme.copyWith(fontFamily: 'Geist')),
-        child: ColoredBox(
-          color: _surfaceFor(theme),
-          child: Padding(
-            padding: padding,
-            child: Align(
-              alignment: Alignment.topLeft,
-              child: DefaultTextStyle(
-                style: theme.copyWith(fontFamily: 'Geist').defaultTextStyle,
-                child: child,
+      // Cairn's text controls wrap Flutter's TextField, which needs
+      // MaterialLocalizations for its selection toolbar and accessibility
+      // strings. A real app gets these from MaterialApp; this harness is
+      // deliberately minimal, so it supplies them directly.
+      child: Localizations(
+        locale: const Locale('en', 'US'),
+        delegates: const <LocalizationsDelegate<dynamic>>[
+          DefaultMaterialLocalizations.delegate,
+          DefaultWidgetsLocalizations.delegate,
+        ],
+        child: Theme(
+          data: CairnTheme.materialTheme(theme.copyWith(fontFamily: 'Geist')),
+          child: ColoredBox(
+            color: _surfaceFor(theme),
+            child: Padding(
+              padding: padding,
+              child: Align(
+                alignment: Alignment.topLeft,
+                child: DefaultTextStyle(
+                  style: theme.copyWith(fontFamily: 'Geist').defaultTextStyle,
+                  child: child,
+                ),
               ),
             ),
           ),
@@ -91,8 +126,7 @@ Future<void> goldenPair(
     await tester.pumpWidget(
       goldenHarness(theme: entry.value, textScale: textScale, child: child),
     );
-    // Settle transitions so hover/focus animations are at rest.
-    await tester.pumpAndSettle();
+    await settleForGolden(tester);
 
     if (!goldensEnabled) continue;
 
@@ -115,7 +149,7 @@ Future<void> goldenSingle(
   addTearDown(() => tester.binding.setSurfaceSize(null));
 
   await tester.pumpWidget(goldenHarness(theme: theme, child: child));
-  await tester.pumpAndSettle();
+  await settleForGolden(tester);
 
   if (!goldensEnabled) return;
 

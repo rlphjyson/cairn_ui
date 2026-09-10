@@ -1,4 +1,5 @@
-import 'package:flutter/material.dart' show TextField, InputDecoration;
+import 'package:flutter/material.dart'
+    show InputDecoration, Material, MaterialType, TextField;
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
@@ -222,21 +223,25 @@ class _CairnCommandState extends State<CairnCommand> {
                         ),
                       ),
                       Expanded(
-                        child: TextField(
-                          controller: _query,
-                          focusNode: _inputFocus,
-                          autofocus: widget.autofocus,
-                          onChanged: (_) => setState(() => _highlighted = 0),
-                          style: theme
-                              .textStyle(CairnTypography.sm)
-                              .copyWith(color: theme.foreground),
-                          cursorColor: theme.foreground,
-                          cursorWidth: 1.0,
-                          decoration: InputDecoration.collapsed(
-                            hintText: widget.placeholder,
-                            hintStyle: theme
+                        // See CairnInput on why the Material is supplied here.
+                        child: Material(
+                          type: MaterialType.transparency,
+                          child: TextField(
+                            controller: _query,
+                            focusNode: _inputFocus,
+                            autofocus: widget.autofocus,
+                            onChanged: (_) => setState(() => _highlighted = 0),
+                            style: theme
                                 .textStyle(CairnTypography.sm)
-                                .copyWith(color: theme.mutedForeground),
+                                .copyWith(color: theme.foreground),
+                            cursorColor: theme.foreground,
+                            cursorWidth: 1.0,
+                            decoration: InputDecoration.collapsed(
+                              hintText: widget.placeholder,
+                              hintStyle: theme
+                                  .textStyle(CairnTypography.sm)
+                                  .copyWith(color: theme.mutedForeground),
+                            ),
                           ),
                         ),
                       ),

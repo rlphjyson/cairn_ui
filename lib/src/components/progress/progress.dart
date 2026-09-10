@@ -44,14 +44,20 @@ class CairnProgress extends StatefulWidget {
 
 class _CairnProgressState extends State<CairnProgress>
     with SingleTickerProviderStateMixin {
-  late final AnimationController _controller = AnimationController(
-    vsync: this,
-    duration: const Duration(milliseconds: 1500),
-  );
+  // Created eagerly in initState rather than with `late final`. A determinate
+  // progress bar never touches the controller during its lifetime, so a lazy
+  // field would be constructed for the first time inside dispose() — and
+  // building a Ticker there throws, because looking up TickerMode on a
+  // deactivated element is unsafe.
+  late final AnimationController _controller;
 
   @override
   void initState() {
     super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1500),
+    );
     if (widget.value == null) _controller.repeat();
   }
 

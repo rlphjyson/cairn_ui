@@ -61,7 +61,24 @@ class CairnSurface extends StatelessWidget {
         style: theme
             .textStyle(CairnTypography.sm)
             .copyWith(color: theme.popoverForeground),
-        child: child,
+        // The popover layer caps a surface's height to the room between the
+        // anchor and the viewport edge. Content taller than that must scroll
+        // rather than overflow — a tall Calendar in a short window is the
+        // common case.
+        //
+        // The scroll view is added only when the incoming constraints are
+        // bounded. A vertical viewport given unbounded height throws, and
+        // CairnSurface is public API that can legitimately be placed inside a
+        // Row or Column with no height limit.
+        child: LayoutBuilder(
+          builder: (BuildContext context, BoxConstraints constraints) {
+            if (!constraints.hasBoundedHeight) return child;
+            return SingleChildScrollView(
+              physics: const ClampingScrollPhysics(),
+              child: child,
+            );
+          },
+        ),
       ),
     );
   }

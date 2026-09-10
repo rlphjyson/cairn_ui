@@ -57,17 +57,32 @@ class CairnMenuPanel extends StatelessWidget {
           style: theme
               .textStyle(CairnTypography.sm)
               .copyWith(color: theme.popoverForeground),
-          child: SingleChildScrollView(
-            // Only the vertical half of `p-1` lives here. The horizontal 4px
-            // is applied by each item instead, so that CairnMenuSeparator —
-            // which CSS pulls back out with `-mx-1` — can span the full panel
-            // width without fighting a parent padding.
-            padding: const EdgeInsets.symmetric(vertical: CairnSpacing.s1),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: children,
-            ),
+          child: LayoutBuilder(
+            builder: (BuildContext context, BoxConstraints constraints) {
+              final Widget list = SingleChildScrollView(
+                // Only the vertical half of `p-1` lives here. The horizontal
+                // 4px is applied by each item instead, so that
+                // CairnMenuSeparator — which CSS pulls back out with `-mx-1` —
+                // can span the full panel width without fighting a parent
+                // padding.
+                padding: const EdgeInsets.symmetric(vertical: CairnSpacing.s1),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  // Items stretch so their highlight fills the panel width
+                  // rather than hugging each label.
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: children,
+                ),
+              );
+
+              // Inside an overlay the popover layer supplies a bounded width.
+              // Used standalone — in a Row, or straight in a page — the width
+              // can be unbounded, and stretching to infinity throws. Sizing to
+              // the widest item keeps the stretch bounded.
+              return constraints.hasBoundedWidth
+                  ? list
+                  : IntrinsicWidth(child: list);
+            },
           ),
         ),
       ),

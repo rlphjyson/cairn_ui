@@ -289,8 +289,19 @@ class _CaretState extends State<_Caret> with SingleTickerProviderStateMixin {
   }
 
   @override
-  Widget build(BuildContext context) => FadeTransition(
-    opacity: _controller,
-    child: Container(width: 1, height: 16, color: widget.color),
-  );
+  Widget build(BuildContext context) {
+    final Widget bar = Container(width: 1, height: 16, color: widget.color);
+
+    // A blinking caret never settles, so reduce-motion (and golden tests, which
+    // set it) get a solid caret instead.
+    final bool reduceMotion =
+        MediaQuery.maybeDisableAnimationsOf(context) ?? false;
+    if (reduceMotion && _controller.isAnimating) {
+      _controller.stop();
+      return bar;
+    }
+    if (reduceMotion) return bar;
+
+    return FadeTransition(opacity: _controller, child: bar);
+  }
 }

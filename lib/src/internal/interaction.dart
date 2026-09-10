@@ -253,6 +253,13 @@ class _CairnInteractiveState extends State<CairnInteractive> {
 
     Widget child = widget.builder(context, states);
 
+    // `disabled:pointer-events-none` takes the element *and its descendants*
+    // out of hit testing. Without this an interactive child inside a disabled
+    // control would still receive taps, which CSS would not allow.
+    if (!enabled) {
+      child = IgnorePointer(child: child);
+    }
+
     child = MouseRegion(
       cursor:
           widget.mouseCursor ??
