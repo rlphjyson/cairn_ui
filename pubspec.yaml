@@ -1,0 +1,39 @@
+name: cairn_ui
+description: >-
+  A Flutter UI library that recreates shadcn/ui's components with faithful
+  dimensional accuracy - exact spacing, radii, OKLCH color tokens, type scale
+  and focus rings - enforced by golden tests.
+version: 0.1.0
+repository: https://github.com/rlphjyson/cairn_ui
+issue_tracker: https://github.com/rlphjyson/cairn_ui/issues
+documentation: https://github.com/rlphjyson/cairn_ui#readme
+
+topics:
+  - ui
+  - widgets
+  - design-system
+  - components
+  - theming
+
+platforms:
+  android:
+  ios:
+  linux:
+  macos:
+  web:
+  windows:
+
+environment:
+  sdk: ^3.9.0
+  flutter: ">=3.27.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_lints: ^6.0.0
+  flutter_test:
+    sdk: flutter
+
+flutter:
