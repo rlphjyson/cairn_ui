@@ -434,7 +434,7 @@ void main() {
       await goldenPair(
         tester,
         'breadcrumb_pagination',
-        SizedBox(
+        const SizedBox(
           width: 460,
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -445,10 +445,10 @@ void main() {
                 crumbs: <CairnCrumb>[
                   CairnCrumb(label: 'Home', onTap: _ignoreVoid),
                   CairnCrumb(label: 'Settings', onTap: _ignoreVoid),
-                  const CairnCrumb.current(label: 'Profile'),
+                  CairnCrumb.current(label: 'Profile'),
                 ],
               ),
-              const CairnPagination(
+              CairnPagination(
                 page: 3,
                 pageCount: 12,
                 showLabels: false,

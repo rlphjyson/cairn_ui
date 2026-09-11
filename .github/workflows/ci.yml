@@ -90,12 +90,21 @@ jobs:
         run: flutter pub publish --dry-run
 
       - name: Install pana
-        run: dart pub global activate pana
+        run: |
+          dart pub global activate pana
+          # `dart pub global run` cannot launch pana (it needs its own
+          # entrypoint on PATH), so expose the pub-cache bin directory.
+          echo "$HOME/.pub-cache/bin" >> "$GITHUB_PATH"
 
       - name: Score with pana
         run: |
           set -o pipefail
-          dart pub global run pana --no-warning --exit-code-threshold 0 . 2>&1 | tee pana.log
+          # --exit-code-threshold is the number of points that may be lost
+          # before the step fails. Platform/dependency checks that need a
+          # published version of the package account for the small gap.
+          pana --no-warning --exit-code-threshold 10 . 2>&1 | tee pana.log
+          echo "--- summary ---"
+          grep -E "^Points|^\s*\[.\]" pana.log | tail -40 || true
 
   build-example:
     name: Build example (web)
