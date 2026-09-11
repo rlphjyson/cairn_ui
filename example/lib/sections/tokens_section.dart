@@ -36,18 +36,10 @@ class _Tokens extends StatelessWidget {
                     ('card', theme.card, '--card'),
                     ('popover', theme.popover, '--popover'),
                     ('primary', theme.primary, 'oklch(0.205 0 0)'),
-                    (
-                      'primary-fg',
-                      theme.primaryForeground,
-                      'oklch(0.985 0 0)',
-                    ),
+                    ('primary-fg', theme.primaryForeground, 'oklch(0.985 0 0)'),
                     ('secondary', theme.secondary, 'oklch(0.97 0 0)'),
                     ('muted', theme.muted, '--muted'),
-                    (
-                      'muted-fg',
-                      theme.mutedForeground,
-                      'oklch(0.556 0 0)',
-                    ),
+                    ('muted-fg', theme.mutedForeground, 'oklch(0.556 0 0)'),
                     ('accent', theme.accent, '--accent'),
                     (
                       'destructive',
@@ -71,15 +63,14 @@ class _Tokens extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             spacing: CairnSpacing.s2,
             children: <Widget>[
-              for (final (String label, double value)
-                  in <(String, double)>[
-                    ('gap-1', CairnSpacing.s1),
-                    ('gap-2', CairnSpacing.s2),
-                    ('gap-3', CairnSpacing.s3),
-                    ('gap-4', CairnSpacing.s4),
-                    ('gap-6', CairnSpacing.s6),
-                    ('gap-8', CairnSpacing.s8),
-                  ])
+              for (final (String label, double value) in <(String, double)>[
+                ('gap-1', CairnSpacing.s1),
+                ('gap-2', CairnSpacing.s2),
+                ('gap-3', CairnSpacing.s3),
+                ('gap-4', CairnSpacing.s4),
+                ('gap-6', CairnSpacing.s6),
+                ('gap-8', CairnSpacing.s8),
+              ])
                 Row(
                   children: <Widget>[
                     SizedBox(
@@ -91,11 +82,7 @@ class _Tokens extends StatelessWidget {
                             .copyWith(color: theme.mutedForeground),
                       ),
                     ),
-                    Container(
-                      width: value,
-                      height: 16,
-                      color: theme.primary,
-                    ),
+                    Container(width: value, height: 16, color: theme.primary),
                     const SizedBox(width: CairnSpacing.s2),
                     Text(
                       '${value.toStringAsFixed(0)}px',
@@ -117,15 +104,14 @@ class _Tokens extends StatelessWidget {
             spacing: CairnSpacing.s4,
             runSpacing: CairnSpacing.s4,
             children: <Widget>[
-              for (final (String label, double radius)
-                  in <(String, double)>[
-                    ('sm / 6', CairnRadius.sm),
-                    ('md / 8', CairnRadius.md),
-                    ('lg / 10', CairnRadius.lg),
-                    ('xl / 14', CairnRadius.xl),
-                    ('2xl / 18', CairnRadius.xl2),
-                    ('full', CairnRadius.full),
-                  ])
+              for (final (String label, double radius) in <(String, double)>[
+                ('sm / 6', CairnRadius.sm),
+                ('md / 8', CairnRadius.md),
+                ('lg / 10', CairnRadius.lg),
+                ('xl / 14', CairnRadius.xl),
+                ('2xl / 18', CairnRadius.xl2),
+                ('full', CairnRadius.full),
+              ])
                 Column(
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[

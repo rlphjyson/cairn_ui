@@ -130,7 +130,7 @@ class CairnCheckbox extends StatelessWidget {
                   color: filled
                       ? theme.primary
                       : (isDark
-                            ? theme.input.withValues(alpha: 0.3)
+                            ? theme.input.withOpacityModifier(0.3)
                             : const Color(0x00000000)),
                   borderRadius: BorderRadius.circular(_radius),
                   border: Border.all(color: borderColor),

@@ -171,14 +171,8 @@ class _OverlaysState extends State<_Overlays> {
               ),
               CairnContextMenu(
                 items: <Widget>[
-                  CairnMenuItem(
-                    onPressed: () {},
-                    child: const Text('Back'),
-                  ),
-                  CairnMenuItem(
-                    onPressed: () {},
-                    child: const Text('Forward'),
-                  ),
+                  CairnMenuItem(onPressed: () {}, child: const Text('Back')),
+                  CairnMenuItem(onPressed: () {}, child: const Text('Forward')),
                   const CairnMenuSeparator(),
                   CairnMenuItem(
                     onPressed: () {},
@@ -272,29 +266,28 @@ class _OverlaysState extends State<_Overlays> {
     ),
   );
 
-  Future<void> _showAlert(BuildContext context) =>
-      showCairnAlertDialog<void>(
-        context: context,
-        builder: (BuildContext context) => CairnAlertDialog(
-          title: const Text('Are you absolutely sure?'),
-          description: const Text(
-            'This permanently deletes your account and removes your data '
-            'from our servers.',
-          ),
-          actions: <Widget>[
-            CairnButton(
-              variant: CairnButtonVariant.outline,
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Cancel'),
-            ),
-            CairnButton(
-              variant: CairnButtonVariant.destructive,
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Delete account'),
-            ),
-          ],
+  Future<void> _showAlert(BuildContext context) => showCairnAlertDialog<void>(
+    context: context,
+    builder: (BuildContext context) => CairnAlertDialog(
+      title: const Text('Are you absolutely sure?'),
+      description: const Text(
+        'This permanently deletes your account and removes your data '
+        'from our servers.',
+      ),
+      actions: <Widget>[
+        CairnButton(
+          variant: CairnButtonVariant.outline,
+          onPressed: () => Navigator.pop(context),
+          child: const Text('Cancel'),
         ),
-      );
+        CairnButton(
+          variant: CairnButtonVariant.destructive,
+          onPressed: () => Navigator.pop(context),
+          child: const Text('Delete account'),
+        ),
+      ],
+    ),
+  );
 
   Future<void> _showSheet(BuildContext context, CairnSheetSide side) =>
       showCairnSheet<void>(
@@ -314,10 +307,7 @@ class _OverlaysState extends State<_Overlays> {
                 onChanged: null,
                 children: <Widget>[
                   CairnRadioItem<String>(value: 'all', label: Text('All')),
-                  CairnRadioItem<String>(
-                    value: 'open',
-                    label: Text('Open'),
-                  ),
+                  CairnRadioItem<String>(value: 'open', label: Text('Open')),
                 ],
               ),
             ],
@@ -369,11 +359,7 @@ class _OverlaysState extends State<_Overlays> {
         keywords: const <String>['logout'],
         onSelected: () {},
       ),
-      CairnCommandItem(
-        label: 'Profile',
-        group: 'Account',
-        onSelected: () {},
-      ),
+      CairnCommandItem(label: 'Profile', group: 'Account', onSelected: () {}),
     ],
   );
 }

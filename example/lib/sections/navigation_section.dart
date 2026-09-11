@@ -43,14 +43,8 @@ class _NavigationState extends State<_Navigation> {
                 value: _tab,
                 onChanged: (String v) => setState(() => _tab = v),
                 tabs: const <CairnTab<String>>[
-                  CairnTab<String>(
-                    value: 'account',
-                    label: Text('Account'),
-                  ),
-                  CairnTab<String>(
-                    value: 'password',
-                    label: Text('Password'),
-                  ),
+                  CairnTab<String>(value: 'account', label: Text('Account')),
+                  CairnTab<String>(value: 'password', label: Text('Password')),
                   CairnTab<String>(value: 'team', label: Text('Team')),
                 ],
               ),
@@ -59,18 +53,12 @@ class _NavigationState extends State<_Navigation> {
                 variant: CairnTabsVariant.line,
                 onChanged: (String v) => setState(() => _lineTab = v),
                 tabs: const <CairnTab<String>>[
-                  CairnTab<String>(
-                    value: 'overview',
-                    label: Text('Overview'),
-                  ),
+                  CairnTab<String>(value: 'overview', label: Text('Overview')),
                   CairnTab<String>(
                     value: 'analytics',
                     label: Text('Analytics'),
                   ),
-                  CairnTab<String>(
-                    value: 'reports',
-                    label: Text('Reports'),
-                  ),
+                  CairnTab<String>(value: 'reports', label: Text('Reports')),
                 ],
               ),
             ],
@@ -244,9 +232,7 @@ class _NavigationState extends State<_Navigation> {
                             'Introduction',
                             style: theme
                                 .textStyle(CairnTypography.sm)
-                                .copyWith(
-                                  fontWeight: CairnTypography.medium,
-                                ),
+                                .copyWith(fontWeight: CairnTypography.medium),
                           ),
                           Text(
                             'Re-usable components built to shadcn/ui\'s '
@@ -305,9 +291,7 @@ class _NavigationState extends State<_Navigation> {
                   DecoratedBox(
                     decoration: BoxDecoration(
                       color: theme.muted,
-                      borderRadius: BorderRadius.circular(
-                        theme.radiusScale.lg,
-                      ),
+                      borderRadius: BorderRadius.circular(theme.radiusScale.lg),
                     ),
                     child: Center(
                       child: Text(

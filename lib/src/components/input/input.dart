@@ -179,7 +179,7 @@ class _CairnInputState extends State<CairnInput> {
             padding: const EdgeInsets.symmetric(horizontal: CairnSpacing.s3),
             decoration: BoxDecoration(
               color: isDark
-                  ? theme.input.withValues(alpha: 0.3)
+                  ? theme.input.withOpacityModifier(0.3)
                   : const Color(0x00000000),
               borderRadius: radius,
               border: Border.all(color: borderColor),

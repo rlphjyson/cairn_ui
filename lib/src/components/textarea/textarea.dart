@@ -152,7 +152,7 @@ class _CairnTextareaState extends State<CairnTextarea> {
             ),
             decoration: BoxDecoration(
               color: isDark
-                  ? theme.input.withValues(alpha: 0.3)
+                  ? theme.input.withOpacityModifier(0.3)
                   : const Color(0x00000000),
               borderRadius: radius,
               border: Border.all(color: borderColor),

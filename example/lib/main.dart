@@ -24,7 +24,16 @@ class CairnCatalogApp extends StatefulWidget {
 }
 
 class _CairnCatalogAppState extends State<CairnCatalogApp> {
-  ThemeMode _mode = ThemeMode.light;
+  late ThemeMode _mode = _initialMode();
+
+  /// Reads `?theme=dark` from the URL so a section can be linked directly.
+  ///
+  /// Also what makes the catalogue screenshottable head-lessly: a CI job or a
+  /// docs build can point a browser at one section in one theme without having
+  /// to drive the UI.
+  static ThemeMode _initialMode() => Uri.base.queryParameters['theme'] == 'dark'
+      ? ThemeMode.dark
+      : ThemeMode.light;
 
   void _toggleTheme() => setState(
     () => _mode = _mode == ThemeMode.light ? ThemeMode.dark : ThemeMode.light,
@@ -88,7 +97,17 @@ class CatalogHome extends StatefulWidget {
 }
 
 class _CatalogHomeState extends State<CatalogHome> {
-  int _index = 0;
+  late int _index = _initialIndex();
+
+  /// Reads `?section=overlays` from the URL, matching on the section title.
+  static int _initialIndex() {
+    final String? name = Uri.base.queryParameters['section']?.toLowerCase();
+    if (name == null) return 0;
+    for (int i = 0; i < _sections.length; i++) {
+      if (_sections[i].title.toLowerCase().startsWith(name)) return i;
+    }
+    return 0;
+  }
 
   static const List<CatalogSection> _sections = <CatalogSection>[
     CatalogSection(
@@ -147,13 +166,14 @@ class _CatalogHomeState extends State<CatalogHome> {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            if (wide) _Sidebar(
-              sections: _sections,
-              index: _index,
-              onSelect: (int i) => setState(() => _index = i),
-              onToggleTheme: widget.onToggleTheme,
-              mode: widget.mode,
-            ),
+            if (wide)
+              _Sidebar(
+                sections: _sections,
+                index: _index,
+                onSelect: (int i) => setState(() => _index = i),
+                onToggleTheme: widget.onToggleTheme,
+                mode: widget.mode,
+              ),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -166,9 +186,7 @@ class _CatalogHomeState extends State<CatalogHome> {
                       onToggleTheme: widget.onToggleTheme,
                       mode: widget.mode,
                     ),
-                  Expanded(
-                    child: _SectionBody(section: _sections[_index]),
-                  ),
+                  Expanded(child: _SectionBody(section: _sections[_index])),
                 ],
               ),
             ),
@@ -450,12 +468,7 @@ class _SectionBody extends StatelessWidget {
 /// A labelled demo block used by every section.
 class Demo extends StatelessWidget {
   /// Creates a demo block.
-  const Demo({
-    super.key,
-    required this.title,
-    required this.child,
-    this.note,
-  });
+  const Demo({super.key, required this.title, required this.child, this.note});
 
   /// The component's name.
   final String title;

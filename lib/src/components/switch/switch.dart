@@ -99,7 +99,7 @@ class CairnSwitch extends StatelessWidget {
           // `data-[state=unchecked]:bg-input`, softened in dark mode.
           final Color trackColor = value
               ? theme.primary
-              : (isDark ? theme.input.withValues(alpha: 0.8) : theme.input);
+              : (isDark ? theme.input.withOpacityModifier(0.8) : theme.input);
 
           final Color thumbColor = isDark
               ? (value ? theme.primaryForeground : theme.foreground)

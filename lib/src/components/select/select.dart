@@ -182,8 +182,8 @@ class _CairnSelectState<T> extends State<CairnSelect<T>> {
                 ),
                 decoration: BoxDecoration(
                   color: isDark
-                      ? theme.input.withValues(
-                          alpha: states.hovered ? 0.5 : 0.3,
+                      ? theme.input.withOpacityModifier(
+                          states.hovered ? 0.5 : 0.3,
                         )
                       : const Color(0x00000000),
                   borderRadius: BorderRadius.circular(theme.radiusScale.md),

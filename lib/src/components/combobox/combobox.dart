@@ -181,8 +181,8 @@ class _CairnComboboxState<T> extends State<CairnCombobox<T>> {
                 ),
                 decoration: BoxDecoration(
                   color: isDark
-                      ? theme.input.withValues(
-                          alpha: states.hovered ? 0.5 : 0.3,
+                      ? theme.input.withOpacityModifier(
+                          states.hovered ? 0.5 : 0.3,
                         )
                       : (states.hovered
                             ? theme.accent

@@ -248,7 +248,7 @@ class _Slot extends StatelessWidget {
         alignment: Alignment.center,
         decoration: BoxDecoration(
           color: isDark
-              ? theme.input.withValues(alpha: 0.3)
+              ? theme.input.withOpacityModifier(0.3)
               : const Color(0x00000000),
           // Only the first slot draws a left border, so adjacent slots share one
           // hairline instead of stacking two.

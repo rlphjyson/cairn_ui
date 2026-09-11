@@ -107,10 +107,7 @@ class _FormsState extends State<_Forms> {
                     leading: const CairnSpinner(),
                     child: const Text('Loading'),
                   ),
-                  const CairnButton(
-                    onPressed: null,
-                    child: Text('Disabled'),
-                  ),
+                  const CairnButton(onPressed: null, child: Text('Disabled')),
                 ],
               ),
             ],
@@ -118,7 +115,8 @@ class _FormsState extends State<_Forms> {
         ),
         Demo(
           title: 'Input, Textarea and Label',
-          note: 'h-9 with px-3 padding, rounded-md and a shadow-xs resting '
+          note:
+              'h-9 with px-3 padding, rounded-md and a shadow-xs resting '
               'elevation. Focus adds a 3px ring at 50% alpha.',
           child: SizedBox(
             width: 360,
@@ -148,10 +146,7 @@ class _FormsState extends State<_Forms> {
                     placeholder: 'Tell us a little about yourself...',
                   ),
                 ),
-                const CairnInput(
-                  placeholder: 'Disabled',
-                  enabled: false,
-                ),
+                const CairnInput(placeholder: 'Disabled', enabled: false),
               ],
             ),
           ),
@@ -184,8 +179,7 @@ class _FormsState extends State<_Forms> {
                   CairnSwitch(
                     value: _notifications,
                     semanticLabel: 'Notifications',
-                    onChanged: (bool v) =>
-                        setState(() => _notifications = v),
+                    onChanged: (bool v) => setState(() => _notifications = v),
                   ),
                   const CairnLabel('Email notifications'),
                 ],
@@ -194,10 +188,7 @@ class _FormsState extends State<_Forms> {
                 value: _plan,
                 onChanged: (String v) => setState(() => _plan = v),
                 children: const <Widget>[
-                  CairnRadioItem<String>(
-                    value: 'free',
-                    label: Text('Free'),
-                  ),
+                  CairnRadioItem<String>(value: 'free', label: Text('Free')),
                   CairnRadioItem<String>(value: 'pro', label: Text('Pro')),
                   CairnRadioItem<String>(
                     value: 'team',
@@ -236,8 +227,7 @@ class _FormsState extends State<_Forms> {
               CairnToggleGroup<String>(
                 values: _alignment,
                 variant: CairnToggleVariant.outline,
-                onChanged: (Set<String> v) =>
-                    setState(() => _alignment = v),
+                onChanged: (Set<String> v) => setState(() => _alignment = v),
                 items: const <CairnToggleGroupItem<String>>[
                   CairnToggleGroupItem<String>(
                     value: 'left',

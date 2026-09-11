@@ -356,7 +356,7 @@ class CairnButton extends StatelessWidget {
         // Light: transparent over background. Dark: `bg-input/30`, hovering to
         // `bg-input/50`.
         final Color fill = isDark
-            ? theme.input.withValues(alpha: hovered ? 0.5 : 0.3)
+            ? theme.input.withOpacityModifier(hovered ? 0.5 : 0.3)
             : (hovered ? theme.accent : theme.background);
         return _ButtonPaint(
           background: fill,

@@ -4,6 +4,25 @@ import '../tokens/colors.dart';
 import '../tokens/radius.dart';
 import '../tokens/typography.dart';
 
+/// Applies Tailwind's `/N` opacity modifier to a colour.
+///
+/// `bg-primary/90` compiles to `color-mix(in oklab, var(--primary) 90%,
+/// transparent)`, which **scales** the colour's existing alpha rather than
+/// replacing it. For an opaque token the two are identical, so
+/// `withValues(alpha: 0.9)` looks right — until the token already carries
+/// alpha.
+///
+/// That is exactly the case in shadcn/ui's dark theme, where `--input` is
+/// `oklch(1 0 0 / 15%)`. `dark:bg-input/30` should therefore paint white at
+/// **4.5%** alpha; `withValues(alpha: 0.3)` would paint it at 30% — more than
+/// six times too strong, and clearly visible as a washed-out grey fill on every
+/// dark-mode form control.
+extension CairnOpacityModifier on Color {
+  /// Returns this colour with its alpha scaled by [factor] (0..1).
+  Color withOpacityModifier(double factor) =>
+      withValues(alpha: a * factor.clamp(0.0, 1.0));
+}
+
 /// The design tokens every Cairn component reads from.
 ///
 /// `CairnTheme` is a [ThemeExtension], which is the deliberate integration

@@ -55,10 +55,7 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      expect(
-        tester.getSize(find.byType(AnimatedContainer).first).width,
-        600,
-      );
+      expect(tester.getSize(find.byType(AnimatedContainer).first).width, 600);
     });
 
     testWidgets('a badge hugs its label', (WidgetTester tester) async {
@@ -76,10 +73,7 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      expect(
-        tester.getSize(find.byType(CairnBadge)).width,
-        lessThan(120),
-      );
+      expect(tester.getSize(find.byType(CairnBadge)).width, lessThan(120));
     });
 
     testWidgets('a toggle hugs its label but respects min-w', (

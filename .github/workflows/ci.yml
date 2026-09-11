@@ -1,0 +1,116 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# The Flutter version is pinned rather than tracking `stable`. Golden images
+# are byte-compared, and a Flutter upgrade can change text shaping or
+# rasterization; pinning means goldens only change when this file does.
+env:
+  FLUTTER_VERSION: 3.44.0
+
+jobs:
+  analyze:
+    name: Analyze and format
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Verify formatting
+        run: dart format --set-exit-if-changed .
+
+      - name: Analyze package
+        run: flutter analyze --fatal-infos --fatal-warnings
+
+      - name: Analyze example
+        run: |
+          flutter pub get
+          flutter analyze --fatal-infos --fatal-warnings
+        working-directory: example
+
+  test:
+    name: Test (incl. goldens)
+    # Goldens are generated and verified on Linux only. The bundled Geist font
+    # removes the dominant source of cross-platform drift, but sub-pixel
+    # anti-aliasing can still differ between operating systems, so the images
+    # are enforced on exactly the platform that produced them. See
+    # test/support/golden.dart.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Run tests
+        run: flutter test --reporter expanded
+
+      - name: Upload golden failures
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: golden-failures
+          path: test/**/failures/**
+          if-no-files-found: ignore
+
+  publish-check:
+    name: Publish dry-run and pana score
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Publish dry-run
+        run: flutter pub publish --dry-run
+
+      - name: Install pana
+        run: dart pub global activate pana
+
+      - name: Score with pana
+        run: |
+          set -o pipefail
+          dart pub global run pana --no-warning --exit-code-threshold 0 . 2>&1 | tee pana.log
+
+  build-example:
+    name: Build example (web)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+
+      - name: Build
+        run: |
+          flutter pub get
+          flutter build web --no-tree-shake-icons
+        working-directory: example

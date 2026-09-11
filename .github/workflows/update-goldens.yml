@@ -1,0 +1,65 @@
+name: Update goldens
+
+# Golden reference images must be generated on the same platform that verifies
+# them, which is the Linux runner used by the `test` job in ci.yml. Running
+# `flutter test --update-goldens` on a developer's Windows or macOS machine
+# produces images the CI job will reject.
+#
+# This workflow regenerates them in that exact environment. Trigger it from the
+# Actions tab, download the `goldens` artifact, and commit the files — or set
+# `commit: true` to have it push the update to a branch directly.
+on:
+  workflow_dispatch:
+    inputs:
+      commit:
+        description: Commit the regenerated goldens back to this branch
+        type: boolean
+        default: false
+
+env:
+  FLUTTER_VERSION: 3.44.0
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    name: Regenerate golden images
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Regenerate goldens
+        run: flutter test --update-goldens
+
+      - name: Upload goldens
+        uses: actions/upload-artifact@v4
+        with:
+          name: goldens
+          path: test/goldens/goldens/**
+          if-no-files-found: error
+
+      - name: Verify the regenerated goldens pass
+        run: flutter test
+
+      - name: Commit
+        if: ${{ inputs.commit }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if [[ -n "$(git status --porcelain test/goldens)" ]]; then
+            git add test/goldens
+            git commit -m "Regenerate golden images on the Linux runner"
+            git push
+          else
+            echo "Goldens already up to date."
+          fi

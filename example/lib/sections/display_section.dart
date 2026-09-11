@@ -42,10 +42,7 @@ class _Display extends StatelessWidget {
                     onPressed: () {},
                     child: const Text('Cancel'),
                   ),
-                  CairnButton(
-                    onPressed: () {},
-                    child: const Text('Deploy'),
-                  ),
+                  CairnButton(onPressed: () {}, child: const Text('Deploy')),
                 ],
               ),
             ],
@@ -157,7 +154,8 @@ class _Display extends StatelessWidget {
         ),
         Demo(
           title: 'Table',
-          note: 'Cells are p-2 and the header row is h-10 - tighter than a '
+          note:
+              'Cells are p-2 and the header row is h-10 - tighter than a '
               'Material DataTable.',
           child: SizedBox(
             width: 480,

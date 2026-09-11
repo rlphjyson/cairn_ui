@@ -224,6 +224,29 @@ void main() {
       expect(CairnTheme.dark.invalidRing.single.color.a, closeTo(0.4, 0.01));
     });
 
+    test('Tailwind\'s /N modifier scales alpha rather than replacing it', () {
+      // `bg-primary/90` on an opaque token: scaling and replacing agree.
+      expect(
+        CairnTheme.light.primary.withOpacityModifier(0.9).a,
+        closeTo(0.9, 0.01),
+      );
+
+      // `dark:bg-input/30` where --input is already oklch(1 0 0 / 15%).
+      // color-mix gives 0.15 * 0.30 = 0.045, not 0.30.
+      final Color darkInput = CairnTheme.dark.input;
+      expect(darkInput.a, closeTo(0.15, 0.01));
+      expect(
+        darkInput.withOpacityModifier(0.3).a,
+        closeTo(0.045, 0.005),
+        reason: 'the modifier multiplies the existing alpha',
+      );
+      expect(
+        darkInput.withOpacityModifier(0.3).a,
+        isNot(closeTo(0.3, 0.01)),
+        reason: 'replacing the alpha would be six times too strong',
+      );
+    });
+
     test('lerp interpolates colours and snaps brightness', () {
       final CairnTheme mid = CairnTheme.light.lerp(CairnTheme.dark, 0.5);
       expect(mid.brightness, Brightness.dark);
