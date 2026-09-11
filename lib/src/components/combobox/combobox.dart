@@ -102,7 +102,8 @@ class _CairnComboboxState<T> extends State<CairnCombobox<T>> {
     super.dispose();
   }
 
-  /// Reset the filter each time the menu opens, matching cmdk.
+  /// Reset the filter each time the menu opens, so a stale search from the
+  /// last time it was open doesn't hide items on reopen.
   void _onOpenChanged() {
     if (!_controller.isOpen) return;
     _query.clear();

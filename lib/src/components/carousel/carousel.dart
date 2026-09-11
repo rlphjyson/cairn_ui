@@ -45,7 +45,7 @@ class CairnCarousel extends StatefulWidget {
   final double height;
 
   /// How much of the viewport one slide occupies. Below 1.0 the neighbouring
-  /// slides peek in, which Embla calls a "partial" slide.
+  /// slides peek in at the edges, hinting that the strip continues.
   final double viewportFraction;
 
   /// The gap between slides, in logical pixels.

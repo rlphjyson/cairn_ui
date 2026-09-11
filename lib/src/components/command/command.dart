@@ -40,8 +40,8 @@ class CairnCommandItem {
 
   /// Extra terms that should match this item during filtering.
   ///
-  /// cmdk supports the same concept, so "Sign out" can be found by typing
-  /// "logout".
+  /// Lets an item be found by a synonym it doesn't display — "Sign out" can
+  /// be found by typing "logout".
   final List<String> keywords;
 
   /// Whether this item matches [query].
@@ -64,10 +64,10 @@ class CairnCommandItem {
 ///
 /// ## Keyboard model
 ///
-/// cmdk keeps focus in the input at all times and moves a *highlight* through
-/// the list with the arrow keys — the list items themselves are never focused.
-/// Cairn does the same: arrow keys and Enter are intercepted above the text
-/// field, so typing and navigating never fight each other.
+/// Focus stays in the input at all times; arrow keys move a *highlight*
+/// through the list instead of moving focus itself, so typing and
+/// navigating never fight each other. Arrow keys and Enter are intercepted
+/// above the text field to make this work.
 ///
 /// ```dart
 /// showCairnCommandPalette(
@@ -138,7 +138,7 @@ class _CairnCommandState extends State<CairnCommand> {
     final List<CairnCommandItem> list = _filtered;
     if (list.isEmpty) return;
     setState(() {
-      // Wraps, matching cmdk's `loop` behaviour.
+      // Wraps around at either end rather than stopping.
       _highlighted = (_highlighted + delta) % list.length;
       if (_highlighted < 0) _highlighted += list.length;
     });
@@ -157,8 +157,8 @@ class _CairnCommandState extends State<CairnCommand> {
     final CairnTheme theme = CairnTheme.of(context);
     final List<CairnCommandItem> list = _filtered;
 
-    // Group headings are emitted whenever the group changes, matching how
-    // cmdk renders `CommandGroup` blocks.
+    // Group headings are emitted whenever the group changes, so items are
+    // clustered under a heading rather than repeating it per item.
     String? lastGroup;
 
     return Shortcuts(

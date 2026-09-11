@@ -469,7 +469,7 @@ void main() {
       expect(
         find.text('Sign out'),
         findsOneWidget,
-        reason: 'cmdk matches keywords too',
+        reason: 'keywords should match too, not just the visible label',
       );
     });
 

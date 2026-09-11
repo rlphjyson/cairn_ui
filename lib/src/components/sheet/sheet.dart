@@ -355,7 +355,7 @@ class CairnDrawer extends StatelessWidget {
     final CairnTheme theme = CairnTheme.of(context);
 
     return GestureDetector(
-      // Drag down past a threshold dismisses, matching Vaul.
+      // Drag down past a velocity threshold dismisses the sheet.
       onVerticalDragEnd: (DragEndDetails details) {
         if (details.primaryVelocity != null && details.primaryVelocity! > 300) {
           Navigator.of(context).maybePop();
@@ -375,8 +375,8 @@ class CairnDrawer extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              // Vaul's grab handle: `mx-auto mt-4 h-2 w-[100px] rounded-full
-              // bg-muted`.
+              // A drag handle hinting that the sheet can be swiped closed:
+              // centred, 4px tall, 100px wide, fully rounded, muted fill.
               Padding(
                 padding: const EdgeInsets.only(top: CairnSpacing.s4),
                 child: Center(

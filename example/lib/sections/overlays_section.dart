@@ -223,7 +223,7 @@ class _OverlaysState extends State<_Overlays> {
           title: 'Command palette',
           note:
               'Focus stays in the input; arrow keys move a highlight through '
-              'the list, exactly as cmdk does.',
+              'the list instead of moving focus itself.',
           child: CairnButton(
             variant: CairnButtonVariant.outline,
             onPressed: () => _showCommand(context),
