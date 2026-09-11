@@ -793,6 +793,36 @@ void main() {
       expect(find.byType(AnimatedContainer), findsNWidgets(6));
     });
   });
+
+  group('CairnContextMenu', () {
+    testWidgets('disposes cleanly when it was never opened', (
+      WidgetTester tester,
+    ) async {
+      // Regression test. The open/close AnimationController used to be a
+      // `late final` field, so a context menu that was never right-clicked
+      // built its controller for the first time inside dispose() — against an
+      // already-deactivated element. createTicker then looked up an ancestor
+      // TickerMode and threw "Looking up a deactivated widget's ancestor is
+      // unsafe". Mounting and unmounting without interacting is enough to
+      // catch it.
+      await tester.pumpWidget(
+        harness(
+          child: CairnContextMenu(
+            items: <Widget>[
+              CairnMenuItem(onPressed: () {}, child: const Text('Reload')),
+            ],
+            child: const SizedBox(width: 120, height: 60),
+          ),
+        ),
+      );
+      await tester.pump();
+
+      await tester.pumpWidget(harness(child: const SizedBox.shrink()));
+      await tester.pump();
+
+      expect(tester.takeException(), isNull);
+    });
+  });
 }
 
 /// A row type for the data table tests.

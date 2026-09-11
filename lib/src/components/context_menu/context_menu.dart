@@ -52,14 +52,30 @@ class _CairnContextMenuState extends State<CairnContextMenu>
   final OverlayPortalController _portal = OverlayPortalController();
   Offset? _position;
 
-  late final AnimationController _animation =
-      AnimationController(
-        vsync: this,
-        duration: CairnMotion.d200,
-        reverseDuration: CairnMotion.d150,
-      )..addStatusListener((AnimationStatus s) {
-        if (s == AnimationStatus.dismissed && mounted) _portal.hide();
-      });
+  /// The open/close animation.
+  ///
+  /// Constructed in [initState] rather than as a `late final` initialiser.
+  /// A lazy field is only created on first read, and for a context menu that
+  /// is never opened the first read is `dispose()` — which builds an
+  /// [AnimationController] against a deactivated element, and
+  /// `SingleTickerProviderStateMixin.createTicker` then walks the tree looking
+  /// for a [TickerMode], tripping "Looking up a deactivated widget's ancestor
+  /// is unsafe". Every other stateful component here touches its controller in
+  /// `initState`, which is why this was the only one affected.
+  late final AnimationController _animation;
+
+  @override
+  void initState() {
+    super.initState();
+    _animation =
+        AnimationController(
+          vsync: this,
+          duration: CairnMotion.d200,
+          reverseDuration: CairnMotion.d150,
+        )..addStatusListener((AnimationStatus s) {
+          if (s == AnimationStatus.dismissed && mounted) _portal.hide();
+        });
+  }
 
   @override
   void dispose() {
