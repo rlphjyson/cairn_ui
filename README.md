@@ -418,7 +418,7 @@ Lucide's geometry with a `CustomPainter`.
 ## Testing
 
 ```bash
-flutter test                 # 114 tests
+flutter test                 # 115 tests
 flutter analyze --fatal-infos --fatal-warnings
 dart format --set-exit-if-changed .
 ```
