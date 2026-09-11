@@ -15,16 +15,17 @@ import '../../tokens/spacing.dart';
 import '../../tokens/typography.dart';
 import '../select/select.dart';
 
-/// A searchable select matching shadcn/ui's `Combobox` recipe.
+/// A searchable select: a Popover holding a filterable command list.
 ///
-/// Like the Date Picker, shadcn/ui documents this as a composition rather than
-/// shipping it: a Popover holding a Command list, triggered by an outline
-/// Button that shows the chosen label and a `chevrons-up-down` glyph at 50%
-/// opacity.
+/// Like the Date Picker, this is a composition rather than a new primitive: a
+/// Popover holding a Command list, triggered by an outline Button that shows
+/// the chosen label and a `chevrons-up-down` glyph at 50% opacity. Cairn ships
+/// it assembled, because the real work is the focus and dismissal handoff
+/// between the three parts, not the parts themselves.
 ///
-/// Cairn packages the same composition. Filtering, highlight-follows-keyboard
-/// and Enter-to-choose all behave as in [CairnCommand], because a combobox is
-/// really a command palette bound to a value.
+/// Filtering, highlight-follows-keyboard and Enter-to-choose all behave as in
+/// [CairnCommand], because a combobox is really a command palette bound to a
+/// value.
 ///
 /// ```dart
 /// CairnCombobox<String>(

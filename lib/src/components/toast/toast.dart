@@ -25,12 +25,12 @@ enum CairnToastVariant {
   info,
 }
 
-/// A transient notification matching shadcn/ui's `Sonner` toasts.
+/// A transient notification.
 ///
-/// shadcn/ui replaced its own Toast component with Sonner. A Sonner toast is
-/// `rounded-md border bg-popover p-4 text-popover-foreground shadow-lg`,
-/// stacked bottom-right, sliding in from the edge and auto-dismissing after
-/// four seconds.
+/// A toast is `rounded-md border bg-popover p-4 text-popover-foreground
+/// shadow-lg`, stacked bottom-right, sliding in from the edge and
+/// auto-dismissing after four seconds — long enough to read a sentence, short
+/// enough that a burst of them clears.
 ///
 /// ## Where the stack lives
 ///

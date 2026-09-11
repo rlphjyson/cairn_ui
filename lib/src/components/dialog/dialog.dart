@@ -9,7 +9,7 @@ import '../../tokens/shadows.dart';
 import '../../tokens/spacing.dart';
 import '../../tokens/typography.dart';
 
-/// Shows a modal dialog matching shadcn/ui's `Dialog`.
+/// Shows a modal dialog.
 ///
 /// The panel is `w-full max-w-[calc(100%-2rem)] sm:max-w-lg gap-4 rounded-lg
 /// border bg-background p-6 shadow-lg` over a `bg-black/50` scrim, animating in
@@ -17,15 +17,17 @@ import '../../tokens/typography.dart';
 ///
 /// ## Why this pushes a route
 ///
-/// Radix traps focus inside an open dialog, restores it to the trigger on
-/// close, and closes on Escape. Flutter gives all three for free to anything
-/// pushed as a [ModalRoute] — [Navigator] installs a [FocusScope] per route and
-/// restores focus on pop. Reimplementing that on an [OverlayEntry] would mean
+/// A modal dialog owes the keyboard three things: focus moves into it on open,
+/// cannot escape it while it is up, and returns to the trigger on close. Escape
+/// dismisses. Flutter gives all three for free to anything pushed as a
+/// [ModalRoute] — [Navigator] installs a [FocusScope] per route and restores
+/// focus on pop. Reimplementing that on an [OverlayEntry] would mean
 /// hand-rolling a focus trap, so modal surfaces use a route while *anchored*
 /// surfaces (Popover, Dropdown Menu) use an overlay.
 ///
-/// It also means the platform back gesture and Android's back button dismiss
-/// the dialog, which users expect and Radix has no equivalent of.
+/// It also buys something the web has no equivalent of: the platform back
+/// gesture and Android's back button dismiss the dialog, which is what a mobile
+/// user will try first.
 ///
 /// ```dart
 /// await showCairnDialog<void>(
@@ -135,8 +137,10 @@ class _CairnModalRoute<T> extends PopupRoute<T> {
 
 /// The panel shown by [showCairnDialog].
 ///
-/// Structure mirrors shadcn/ui's slots: header (title + description), body and
-/// footer, separated by `gap-4` (16 logical pixels), inside `p-6` padding.
+/// Three slots — header (title + description), body and footer — separated by
+/// `gap-4` (16 logical pixels) inside `p-6` padding. Slots rather than a free
+/// child list, so that every dialog in an app spaces its parts the same way
+/// without each call site re-deciding.
 class CairnDialog extends StatelessWidget {
   /// Creates a dialog panel.
   const CairnDialog({
@@ -228,7 +232,7 @@ class CairnDialog extends StatelessWidget {
 ///
 /// Dialog content needs an ambient [DefaultTextStyle] and [IconTheme], but
 /// wrapping in Material's `Material` would also drag along its ink, elevation
-/// and theme defaults — none of which shadcn/ui has. This provides only what is
+/// and theme defaults — none of which Cairn wants. This provides only what is
 /// actually required.
 class _DialogSurface extends StatelessWidget {
   const _DialogSurface({required this.child});
@@ -357,11 +361,12 @@ class CairnDialogFooter extends StatelessWidget {
   }
 }
 
-/// A confirmation dialog matching shadcn/ui's `AlertDialog`.
+/// A confirmation dialog.
 ///
 /// Differs from [CairnDialog] in three ways that matter: there is no close
 /// button, the scrim is not dismissible, and Escape does not close it — an
-/// alert dialog demands an explicit choice. Radix enforces the same.
+/// alert dialog exists precisely to demand an explicit choice, and every
+/// accidental way out of it undermines that.
 class CairnAlertDialog extends StatelessWidget {
   /// Creates an alert dialog panel.
   const CairnAlertDialog({

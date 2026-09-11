@@ -32,7 +32,7 @@ class CairnAccordionItem {
   final bool enabled;
 }
 
-/// A vertical stack of collapsible sections, matching shadcn/ui's `Accordion`.
+/// A vertical stack of collapsible sections.
 ///
 /// Each item is separated by `border-b last:border-b-0`. The trigger is
 /// `flex flex-1 items-start justify-between gap-4 py-4 text-sm font-medium`
@@ -78,7 +78,9 @@ class CairnAccordion extends StatelessWidget {
 
   /// Whether more than one section may be open at once.
   ///
-  /// Mirrors Radix's `type="single"` / `type="multiple"`.
+  /// Single mode closes the open section when another is opened, which keeps
+  /// the control's height predictable; multiple mode lets any number of
+  /// sections stand open at once.
   final bool multiple;
 
   void _toggle(String value) {
@@ -219,11 +221,11 @@ class _AccordionSection extends StatelessWidget {
   }
 }
 
-/// A single show/hide region matching shadcn/ui's `Collapsible`.
+/// A single show/hide region.
 ///
-/// Radix's Collapsible is the primitive Accordion is built on; it has no
-/// styling of its own, so this is a behavioural component that animates its
-/// child's height with the same 200ms curve.
+/// This is the primitive the Accordion is built on. It carries no chrome of its
+/// own — it only animates its child's height over the same 200ms curve — so it
+/// drops into whatever surface the caller already has.
 class CairnCollapsible extends StatelessWidget {
   /// Creates a collapsible region.
   const CairnCollapsible({

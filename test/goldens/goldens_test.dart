@@ -4,12 +4,12 @@ import 'package:flutter_test/flutter_test.dart';
 
 import '../support/golden.dart';
 
-/// Golden sheets — the continuously-enforced half of Cairn's pixel accuracy.
+/// Golden sheets — the mechanism that stops Cairn's appearance drifting.
 ///
-/// Token extraction (see `lib/src/tokens/`) is what makes the *initial*
-/// implementation match shadcn/ui. These goldens are what stop it drifting
-/// afterwards: every component is rendered in both themes and byte-compared
-/// against a committed reference image.
+/// The token layer (see `lib/src/tokens/`) is what makes an implementation
+/// correct in the first place. These goldens are what keep it correct: every
+/// component is rendered in both themes and byte-compared against a committed
+/// reference image.
 ///
 /// Each test captures a *sheet* — all of a component's variants and states in
 /// one image — rather than one file per variant. That keeps the reference set
@@ -479,7 +479,7 @@ void main() {
               CairnAccordionItem(
                 value: 'b',
                 title: Text('Is it styled?'),
-                content: Text('Yes, to shadcn/ui measurements.'),
+                content: Text('Yes. It comes styled by default.'),
               ),
             ],
           ),
@@ -668,7 +668,7 @@ void main() {
               CairnFormField(
                 label: 'Username',
                 description: 'This is your public display name.',
-                child: CairnInput(placeholder: 'shadcn'),
+                child: CairnInput(placeholder: 'cairn'),
               ),
               CairnFormField(
                 label: 'Email',

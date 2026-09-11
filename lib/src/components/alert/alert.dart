@@ -14,7 +14,7 @@ enum CairnAlertVariant {
   destructive,
 }
 
-/// A callout matching shadcn/ui's `Alert`.
+/// A callout for a short, prominent message.
 ///
 /// `relative grid w-full items-start rounded-lg border px-4 py-3 text-sm`.
 ///

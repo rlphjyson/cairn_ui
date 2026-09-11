@@ -8,19 +8,18 @@ import '../../tokens/radius.dart';
 import '../../tokens/shadows.dart';
 import '../../tokens/spacing.dart';
 
-/// A group of mutually exclusive radio buttons, matching shadcn/ui's
-/// `RadioGroup`.
+/// A group of mutually exclusive radio buttons.
 ///
 /// The group itself is `grid gap-3` — a 12 logical pixel gap between items.
 ///
 /// ## Accessibility
 ///
-/// Radix implements radio groups with **roving focus**: the group holds a
-/// single tab stop, and arrow keys move the selection between items. Cairn
-/// reproduces that with a [FocusTraversalGroup] plus arrow-key [Shortcuts], so
-/// tabbing lands on the group once rather than stepping through every option —
-/// which is both the accessible behaviour and what a screen-reader user
-/// expects.
+/// The group uses **roving focus**: it holds a single tab stop, and arrow keys
+/// move the selection within it. Cairn implements that with a
+/// [FocusTraversalGroup] plus arrow-key [Shortcuts], so tabbing lands on the
+/// group once instead of stepping through every option — which is both the
+/// accessible behaviour and what makes a ten-option group survivable from the
+/// keyboard.
 ///
 /// ```dart
 /// CairnRadioGroup<String>(

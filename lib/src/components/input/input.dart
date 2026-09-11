@@ -8,13 +8,14 @@ import '../../tokens/shadows.dart';
 import '../../tokens/spacing.dart';
 import '../../tokens/typography.dart';
 
-/// A single-line text field matching shadcn/ui's `Input`.
+/// A single-line text field.
 ///
-/// Dimensions come straight from shadcn/ui's classes: `h-9` (36 logical
-/// pixels), `px-3` (12), `rounded-md`, a 1px `border-input` outline and
-/// `shadow-xs`. Focus swaps the border to `--ring` and adds the 3px
-/// `ring-ring/50` outset. The dark theme adds a translucent `bg-input/30`
-/// fill that light mode does not have.
+/// 36 logical pixels tall (`h-9`) with 12px of horizontal padding, an 8px
+/// radius, a 1px outline in the input token and the smallest shadow in the
+/// scale — the same height as the default Button, so the two sit level in a
+/// form row. Focus swaps the border to the ring colour and adds a 3px outset at
+/// 50% alpha. The dark theme adds a translucent fill that light mode does not
+/// have, since a hairline alone barely separates a field from a dark page.
 ///
 /// ## Implementation note
 ///

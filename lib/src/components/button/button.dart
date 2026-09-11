@@ -10,14 +10,19 @@ import '../../tokens/typography.dart';
 
 /// The visual style of a [CairnButton].
 ///
-/// Mirrors shadcn/ui's `buttonVariants` `variant` axis exactly.
+/// Six deliberate variants, each mapped to a semantic slot in [CairnTheme]
+/// rather than to a fixed colour — so retheming moves all of them together, and
+/// the choice between them stays a statement about emphasis rather than about
+/// paint.
 enum CairnButtonVariant {
   /// `bg-primary text-primary-foreground hover:bg-primary/90`.
   primary,
 
   /// `bg-destructive text-white hover:bg-destructive/90`.
   ///
-  /// In dark mode shadcn/ui softens the fill to `dark:bg-destructive/60`.
+  /// The dark theme softens the fill to 60% (`dark:bg-destructive/60`):
+  /// full-strength red against a dark page reads as an alarm rather than as a
+  /// button.
   destructive,
 
   /// `border bg-background shadow-xs hover:bg-accent`.
@@ -38,7 +43,11 @@ enum CairnButtonVariant {
 
 /// The size of a [CairnButton].
 ///
-/// Mirrors shadcn/ui's `size` axis, including the square icon-only sizes.
+/// Four sizes for buttons with a label and four square sizes for icon-only
+/// ones. The icon sizes are separate entries rather than a flag on the others,
+/// because a square button is not simply a text button with the label removed
+/// — it drops horizontal padding entirely and takes its width from its
+/// height.
 enum CairnButtonSize {
   /// `h-6 gap-1 px-2 text-xs` with 12px icons.
   xs,
@@ -69,12 +78,12 @@ enum CairnButtonSize {
       this == iconXs || this == iconSm || this == iconMd || this == iconLg;
 }
 
-/// A button matching shadcn/ui's `Button`.
+/// A button with six variants and eight sizes.
 ///
-/// Six variants ([CairnButtonVariant]) and eight sizes ([CairnButtonSize]),
-/// with dimensions taken from shadcn/ui's Tailwind classes: the default size is
-/// `h-9 px-4` — 36 logical pixels tall with 16px of horizontal padding — and
-/// text is `text-sm font-medium` (14px, weight 500).
+/// The default size is 36 logical pixels tall with 16px of horizontal padding
+/// (`h-9 px-4`), and its label is 14px at weight 500 (`text-sm font-medium`) —
+/// a scale that keeps a row of buttons in line with 14px body text. Variants
+/// are [CairnButtonVariant], sizes [CairnButtonSize].
 ///
 /// ```dart
 /// CairnButton(
@@ -94,10 +103,10 @@ enum CairnButtonSize {
 /// ## Accessibility
 ///
 /// The button is a focusable [Semantics] button, activates on both Space and
-/// Enter (matching Radix), and shows its focus ring only on keyboard focus —
-/// see [CairnInteractive] for how `:focus-visible` is reproduced. Passing null
-/// to [onPressed] disables it, which removes it from focus traversal and drops
-/// its opacity to 50% (`disabled:opacity-50`).
+/// Enter, and shows its focus ring only on keyboard focus — see
+/// [CairnInteractive] for how `:focus-visible` is reproduced. Passing null to
+/// [onPressed] disables it, which removes it from focus traversal and drops its
+/// opacity to 50%.
 class CairnButton extends StatelessWidget {
   /// Creates a button.
   const CairnButton({
@@ -117,9 +126,11 @@ class CairnButton extends StatelessWidget {
 
   /// Creates an icon-only button.
   ///
-  /// Uses a square size and applies [semanticLabel] as the accessible name,
-  /// which is required because there is no visible text — this is the direct
-  /// equivalent of shadcn/ui pairing `size="icon"` with an `sr-only` label.
+  /// Uses a square size and applies [semanticLabel] as the accessible name.
+  /// The label is a required parameter, not an optional one: an icon-only
+  /// button has no visible text for a screen reader to fall back on, and
+  /// making it required is the only reliable way to stop that being
+  /// forgotten.
   const CairnButton.icon({
     super.key,
     required Widget icon,
@@ -167,8 +178,9 @@ class CairnButton extends StatelessWidget {
 
   /// Whether to stretch to the available width.
   ///
-  /// shadcn/ui achieves this with `w-full` on the element rather than a
-  /// variant, so it is a flag here rather than a size.
+  /// Cairn exposes this as an explicit flag rather than folding it into
+  /// [CairnButtonSize], since width is orthogonal to height and padding: any
+  /// of the eight sizes can stretch, and none of them implies it.
   final bool expand;
 
   /// Whether the button is interactive.
@@ -198,7 +210,8 @@ class CairnButton extends StatelessWidget {
     _ => CairnSpacing.s2,
   };
 
-  /// `[&_svg]:size-*` — the icon size shadcn/ui forces on child SVGs.
+  /// The size forced onto [leading] and [trailing] icons, so a caller's icon
+  /// cannot throw the button's height or its optical balance off.
   double get _iconSize => switch (size) {
     CairnButtonSize.xs || CairnButtonSize.iconXs => 12.0,
     _ => 16.0,
@@ -291,9 +304,10 @@ class CairnButton extends StatelessWidget {
             : EdgeInsets.symmetric(horizontal: _paddingX),
         // Deliberately no `alignment`. A Container with a non-null alignment
         // expands to fill its bounded constraints, which would make every button
-        // stretch to the width of its parent — the opposite of shadcn/ui's
-        // `inline-flex` (width-of-content) behaviour. Centring is handled by the
-        // Row's own mainAxisAlignment instead.
+        // stretch to the width of its parent — the opposite of what a button
+        // should do, which is size to its own content unless [expand] says
+        // otherwise. Centring is handled by the Row's own mainAxisAlignment
+        // instead.
         decoration: BoxDecoration(
           color: paint.background,
           borderRadius: radius,

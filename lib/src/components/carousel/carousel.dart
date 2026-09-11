@@ -7,15 +7,17 @@ import '../../tokens/radius.dart';
 import '../../tokens/spacing.dart';
 import '../button/button.dart';
 
-/// A horizontally paged content strip matching shadcn/ui's `Carousel`.
+/// A horizontally paged content strip.
 ///
-/// shadcn/ui wraps Embla Carousel and adds two `size-8 rounded-full` outline
-/// buttons positioned outside the viewport edges (`-left-12` / `-right-12`),
-/// which is why a shadcn carousel needs horizontal room around it.
+/// The previous/next controls are 32 logical pixel round outline buttons that
+/// sit *outside* the viewport edges rather than floating over the content, so
+/// they never cover part of a slide. The trade-off is worth stating plainly:
+/// the carousel needs horizontal room around it.
 ///
-/// Cairn drives the strip with a [PageView] rather than porting Embla — the
-/// scroll physics, drag handling and page snapping are already correct in
-/// Flutter, and the component's identity lives in its chrome and metrics.
+/// The strip itself is a [PageView]. Flutter's scroll physics, drag handling
+/// and page snapping are already right, and anything hand-rolled would only be
+/// a worse version of them — so the component's substance is its chrome, its
+/// metrics and its keyboard behaviour.
 ///
 /// ```dart
 /// CairnCarousel(
@@ -46,7 +48,7 @@ class CairnCarousel extends StatefulWidget {
   /// slides peek in, which Embla calls a "partial" slide.
   final double viewportFraction;
 
-  /// The gap between slides (`pl-4` on each item in shadcn/ui).
+  /// The gap between slides, in logical pixels.
   final double spacing;
 
   /// Whether to show the previous/next buttons.

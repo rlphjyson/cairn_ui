@@ -22,8 +22,8 @@ class _Tokens extends StatelessWidget {
         Demo(
           title: 'Semantic colours',
           note:
-              'shadcn/ui\'s Neutral base, authored in oklch() and converted to '
-              'sRGB at build time. The greys land exactly on Tailwind\'s '
+              'A neutral base palette, authored in oklch() and converted '
+              'to sRGB at build time. The greys land exactly on Tailwind\'s '
               'published neutral ramp.',
           child: Wrap(
             spacing: CairnSpacing.s3,
@@ -98,8 +98,9 @@ class _Tokens extends StatelessWidget {
         Demo(
           title: 'Radius scale',
           note:
-              'Derived from --radius: 0.625rem via the multiplier formula the '
-              'current shadcn CLI writes (0.6 / 0.8 / 1 / 1.4).',
+              'Every step is a multiple of the 10px base radius '
+              '(0.6 / 0.8 / 1 / 1.4), so retuning one number rescales all '
+              'of them.',
           child: Wrap(
             spacing: CairnSpacing.s4,
             runSpacing: CairnSpacing.s4,

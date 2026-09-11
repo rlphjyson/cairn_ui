@@ -1,13 +1,12 @@
 import 'package:flutter/widgets.dart';
 
-/// Constrains a child to a fixed aspect ratio, matching shadcn/ui's
-/// `AspectRatio`.
+/// Constrains a child to a fixed aspect ratio.
 ///
-/// Radix's implementation is a padding-top percentage hack, which exists purely
-/// because CSS had no direct way to express this before `aspect-ratio` shipped.
-/// Flutter has always had [AspectRatio], so this is a thin, documented wrapper
-/// that keeps the Cairn API surface complete and consistent rather than
-/// reimplementing anything.
+/// Flutter's own [AspectRatio] already does this correctly, so this is a thin,
+/// documented wrapper rather than a reimplementation — there is nothing here to
+/// improve on. It exists so the Cairn surface stays complete: a
+/// ratio-constrained box inside a Card is reached for by the same name as
+/// everything around it.
 ///
 /// ```dart
 /// CairnAspectRatio(

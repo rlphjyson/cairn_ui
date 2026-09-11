@@ -99,14 +99,14 @@ void main() {
 
       await tester.sendKeyEvent(LogicalKeyboardKey.space);
       await tester.pump();
-      expect(taps, 1, reason: 'Space should activate, as it does in Radix');
+      expect(taps, 1, reason: 'Space should activate a focused button');
 
       await tester.sendKeyEvent(LogicalKeyboardKey.enter);
       await tester.pump();
       expect(taps, 2, reason: 'Enter should activate too');
     });
 
-    testWidgets('renders at the exact shadcn/ui heights', (
+    testWidgets('renders at its documented heights', (
       WidgetTester tester,
     ) async {
       for (final (CairnButtonSize size, double expected)

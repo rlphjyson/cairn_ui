@@ -4,19 +4,20 @@ import '../tokens/colors.dart';
 import '../tokens/radius.dart';
 import '../tokens/typography.dart';
 
-/// Applies Tailwind's `/N` opacity modifier to a colour.
+/// Scales a colour's alpha, rather than replacing it.
 ///
-/// `bg-primary/90` compiles to `color-mix(in oklab, var(--primary) 90%,
-/// transparent)`, which **scales** the colour's existing alpha rather than
-/// replacing it. For an opaque token the two are identical, so
-/// `withValues(alpha: 0.9)` looks right — until the token already carries
-/// alpha.
+/// Cairn expresses partial-strength tokens as a *fraction of what the token
+/// already is* — "the primary colour at 90%" — which is the same semantics as
+/// the `/N` opacity modifier in CSS utility frameworks, where `primary/90`
+/// compiles to `color-mix(in oklab, var(--primary) 90%, transparent)`.
 ///
-/// That is exactly the case in shadcn/ui's dark theme, where `--input` is
-/// `oklch(1 0 0 / 15%)`. `dark:bg-input/30` should therefore paint white at
-/// **4.5%** alpha; `withValues(alpha: 0.3)` would paint it at 30% — more than
-/// six times too strong, and clearly visible as a washed-out grey fill on every
-/// dark-mode form control.
+/// For a fully opaque token, scaling and replacing are indistinguishable, so
+/// `withValues(alpha: 0.9)` looks correct — until the token already carries
+/// alpha. That is exactly the case in Cairn's dark theme, where
+/// [CairnTheme.input] is `oklch(1 0 0 / 15%)`: white at 15%. Taking 30% of it
+/// should paint white at **4.5%**; `withValues(alpha: 0.3)` would paint it at
+/// 30% — more than six times too strong, and plainly visible as a washed-out
+/// grey fill across every dark-mode form control.
 extension CairnOpacityModifier on Color {
   /// Returns this colour with its alpha scaled by [factor] (0..1).
   Color withOpacityModifier(double factor) =>
@@ -97,78 +98,82 @@ class CairnTheme extends ThemeExtension<CairnTheme> {
   /// Whether this is a light or dark theme.
   ///
   /// A handful of components genuinely branch on brightness rather than on a
-  /// token, because shadcn/ui itself uses `dark:` variants that have no light
-  /// counterpart — for example the outline Button gains a `dark:bg-input/30`
-  /// fill that simply does not exist in light mode.
+  /// token, because the dark theme asks for a treatment with no light-mode
+  /// counterpart. The outline Button is the clearest case: on a dark page a
+  /// hairline border alone barely separates the control from its background,
+  /// so it takes a faint fill that would be redundant in light mode.
   final Brightness brightness;
 
-  /// `--background`. The page surface.
+  /// The page surface.
   final Color background;
 
-  /// `--foreground`. Default body text on [background].
+  /// Default body text on [background].
   final Color foreground;
 
-  /// `--card`. Raised content surfaces.
+  /// Raised content surfaces.
   final Color card;
 
-  /// `--card-foreground`. Text on [card].
+  /// Text on [card].
   final Color cardForeground;
 
-  /// `--popover`. Floating surfaces: Popover, Dropdown Menu, Select, Tooltip
-  /// bodies, Command palette.
+  /// Floating surfaces: Popover, Dropdown Menu, Select, Tooltip bodies,
+  /// Command palette.
   final Color popover;
 
-  /// `--popover-foreground`. Text on [popover].
+  /// Text on [popover].
   final Color popoverForeground;
 
-  /// `--primary`. High-emphasis fills — the default Button, the checked
-  /// Checkbox and Switch, the Progress indicator.
+  /// High-emphasis fills — the default Button, the checked Checkbox and
+  /// Switch, the Progress indicator.
   final Color primary;
 
-  /// `--primary-foreground`. Text and icons on [primary].
+  /// Text and icons on [primary].
   final Color primaryForeground;
 
-  /// `--secondary`. Low-emphasis fills — the secondary Button and Badge.
+  /// Low-emphasis fills — the secondary Button and Badge.
   final Color secondary;
 
-  /// `--secondary-foreground`. Text on [secondary].
+  /// Text on [secondary].
   final Color secondaryForeground;
 
-  /// `--muted`. De-emphasised backgrounds — Slider track, Table footer.
+  /// De-emphasised backgrounds — Slider track, Table footer.
   final Color muted;
 
-  /// `--muted-foreground`. Secondary text — descriptions, placeholders.
+  /// Secondary text — descriptions, placeholders.
   final Color mutedForeground;
 
-  /// `--accent`. Hover and keyboard-focus highlight for interactive rows.
+  /// Hover and keyboard-focus highlight for interactive rows.
   final Color accent;
 
-  /// `--accent-foreground`. Text on [accent].
+  /// Text on [accent].
   final Color accentForeground;
 
-  /// `--destructive`. Danger fills and destructive text.
+  /// Danger fills and destructive text.
   final Color destructive;
 
   /// The foreground paired with [destructive] fills.
   ///
-  /// Current shadcn/ui hardcodes `text-white` here instead of reading a
-  /// variable; Cairn keeps it as a slot so it can be themed.
+  /// A slot of its own rather than a hardcoded white, so a theme that softens
+  /// the destructive fill can move the text sitting on it as well.
   final Color destructiveForeground;
 
-  /// `--border`. Hairlines and component outlines.
+  /// Hairlines and component outlines.
   final Color border;
 
-  /// `--input`. The border color of form controls specifically, which
-  /// shadcn/ui tokenises separately from [border].
+  /// The border color of form controls specifically.
+  ///
+  /// Tokenised separately from [border] so that inputs can read at a different
+  /// weight from ordinary hairlines — which the dark theme uses, lifting form
+  /// controls to 15% white where a plain border sits at 10%.
   final Color input;
 
-  /// `--ring`. The focus ring color.
+  /// The focus ring color.
   ///
-  /// Components draw it at 50% alpha and 3px thickness, matching
-  /// `focus-visible:ring-[3px] focus-visible:ring-ring/50`.
+  /// Components draw it at 50% alpha and 3px thickness; see [focusRing].
   final Color ring;
 
-  /// `--radius`, in logical pixels. Defaults to [CairnRadius.base] (10.0).
+  /// The base corner radius, in logical pixels. Defaults to
+  /// [CairnRadius.base] (10.0).
   ///
   /// Change this to rescale every component's corners proportionally; see
   /// [radiusScale].
@@ -176,20 +181,20 @@ class CairnTheme extends ThemeExtension<CairnTheme> {
 
   /// The font family applied to all Cairn text.
   ///
-  /// Null means "inherit whatever the host app set", which mirrors shadcn/ui's
-  /// components saying only `font-sans`.
+  /// Null means "inherit whatever the host app set". Cairn names no typeface
+  /// of its own, so it adopts the host's rather than imposing one.
   final String? fontFamily;
 
   /// Fallback families for [fontFamily].
   final List<String>? fontFamilyFallback;
 
-  /// The derived `rounded-*` scale for this theme's [radius].
+  /// The derived radius scale for this theme's [radius].
   CairnRadiusScale get radiusScale => CairnRadiusScale(radius);
 
-  /// The focus ring color at the 50% alpha shadcn/ui uses (`ring-ring/50`).
+  /// [ring] at the 50% alpha the focus ring is drawn with.
   Color get ringMuted => ring.withValues(alpha: 0.5);
 
-  /// The scrim behind modal surfaces (`bg-black/50`).
+  /// The scrim behind modal surfaces — black at 50%.
   Color get overlay => CairnColors.overlay;
 
   /// The focus ring as a box-shadow list.
@@ -201,10 +206,10 @@ class CairnTheme extends ThemeExtension<CairnTheme> {
     BoxShadow(color: ringMuted, spreadRadius: 3.0),
   ];
 
-  /// The focus ring tinted for invalid controls (`ring-destructive/20`).
+  /// The focus ring tinted for invalid controls.
   ///
-  /// The dark theme raises the alpha to 40%, matching
-  /// `dark:aria-invalid:ring-destructive/40`.
+  /// [destructive] at 20% alpha, raised to 40% in the dark theme where the
+  /// lower-contrast surface needs the extra weight to register.
   List<BoxShadow> get invalidRing => <BoxShadow>[
     BoxShadow(
       color: destructive.withValues(
@@ -220,7 +225,7 @@ class CairnTheme extends ThemeExtension<CairnTheme> {
     fontFamilyFallback: fontFamilyFallback,
   );
 
-  /// shadcn/ui's default light theme (Neutral base).
+  /// Cairn's default light theme.
   static const CairnTheme light = CairnTheme(
     brightness: Brightness.light,
     background: CairnColors.lightBackground,
@@ -244,7 +249,7 @@ class CairnTheme extends ThemeExtension<CairnTheme> {
     ring: CairnColors.lightRing,
   );
 
-  /// shadcn/ui's default dark theme (Neutral base).
+  /// Cairn's default dark theme.
   static const CairnTheme dark = CairnTheme(
     brightness: Brightness.dark,
     background: CairnColors.darkBackground,
@@ -281,7 +286,7 @@ class CairnTheme extends ThemeExtension<CairnTheme> {
   /// This does not replace Material — it aligns it, so a host app mixing Cairn
   /// widgets with Material ones does not get two clashing palettes. It sets the
   /// scaffold and canvas colors, a matching [ColorScheme], the text selection
-  /// colors, and disables Material's ink splash (shadcn/ui has no ripple; its
+  /// colors, and disables Material's ink splash (Cairn has no ripple; its
   /// interactions are colour and shadow transitions only).
   static ThemeData materialTheme(CairnTheme cairn) {
     final ColorScheme scheme =
@@ -312,9 +317,9 @@ class CairnTheme extends ThemeExtension<CairnTheme> {
       splashFactory: NoSplash.splashFactory,
       highlightColor: const Color(0x00000000),
       // Material 3's TextField is a *filled* field by default, painting
-      // `surfaceContainerHighest` behind the text. shadcn/ui inputs are
-      // `bg-transparent` with the border doing the work, so the fill is
-      // switched off here rather than fought per-component.
+      // `surfaceContainerHighest` behind the text. Cairn inputs are
+      // transparent with the border doing the work, so the fill is switched
+      // off here rather than fought per-component.
       inputDecorationTheme: const InputDecorationTheme(
         filled: false,
         fillColor: Color(0x00000000),

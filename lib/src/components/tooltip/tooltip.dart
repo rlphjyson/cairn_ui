@@ -7,7 +7,7 @@ import '../../tokens/spacing.dart';
 import '../../tokens/typography.dart';
 import '../popover/popover.dart';
 
-/// A hover/focus hint matching shadcn/ui's `Tooltip`.
+/// A hover/focus hint.
 ///
 /// `w-fit rounded-md bg-foreground px-3 py-1.5 text-xs text-background` — note
 /// the **inverted** colours: a tooltip is the foreground colour filled with
@@ -16,9 +16,11 @@ import '../popover/popover.dart';
 ///
 /// ## Behaviour
 ///
-/// Radix opens a tooltip after a delay (700ms by default) and closes it
-/// immediately on pointer exit. It also opens on keyboard focus, which is what
-/// makes tooltips usable without a mouse — both are reproduced here.
+/// The tooltip opens after a 700ms delay and closes immediately on pointer
+/// exit: the delay is what stops a row of icon buttons flashing tooltips as the
+/// pointer crosses them, and there is no reason to linger once the pointer has
+/// left. It also opens on keyboard focus, without which a tooltip is invisible
+/// to anyone not using a mouse.
 ///
 /// ```dart
 /// CairnTooltip(
@@ -141,15 +143,17 @@ class _CairnTooltipState extends State<CairnTooltip> {
   }
 }
 
-/// A richer hover panel matching shadcn/ui's `HoverCard`.
+/// A richer hover panel.
 ///
 /// `w-64 rounded-md border bg-popover p-4 text-popover-foreground shadow-md` —
 /// 256 logical pixels wide, and unlike [CairnTooltip] it is a normal popover
 /// surface rather than an inverted chip.
 ///
-/// Radix opens a hover card after 700ms and closes it after a 300ms grace
-/// period, so the pointer can travel from trigger to card without it vanishing.
-/// That grace period is reproduced here.
+/// It opens after 700ms and closes after a 300ms grace period. The grace
+/// period is the difference between a usable hover card and an infuriating one:
+/// the card holds interactive content, so the pointer has to be able to travel
+/// from the trigger to the card without it vanishing in the gap between
+/// them.
 class CairnHoverCard extends StatefulWidget {
   /// Creates a hover card.
   const CairnHoverCard({

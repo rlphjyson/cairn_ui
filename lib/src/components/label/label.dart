@@ -4,7 +4,7 @@ import '../../theme/cairn_theme.dart';
 import '../../tokens/spacing.dart';
 import '../../tokens/typography.dart';
 
-/// A form label matching shadcn/ui's `Label`.
+/// A form label.
 ///
 /// `flex items-center gap-2 text-sm leading-none font-medium select-none`.
 ///
@@ -13,8 +13,9 @@ import '../../tokens/typography.dart';
 /// (~1.2), so this must be set explicitly or a label sits a pixel or two low
 /// relative to the control it labels.
 ///
-/// Setting [enabled] to false applies `peer-disabled:opacity-50`, mirroring how
-/// shadcn/ui dims a label whose control is disabled.
+/// Setting [enabled] to false drops the label to 50% opacity, so a disabled
+/// control and its label read as one inert unit rather than a live label above
+/// a dead field.
 ///
 /// ```dart
 /// Column(

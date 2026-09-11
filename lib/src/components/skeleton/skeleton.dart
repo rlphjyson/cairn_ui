@@ -3,7 +3,7 @@ import 'package:flutter/widgets.dart';
 import '../../theme/cairn_theme.dart';
 import '../../tokens/motion.dart';
 
-/// A loading placeholder matching shadcn/ui's `Skeleton`.
+/// A loading placeholder.
 ///
 /// `animate-pulse rounded-md bg-accent`.
 ///

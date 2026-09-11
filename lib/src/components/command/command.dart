@@ -54,7 +54,7 @@ class CairnCommandItem {
   }
 }
 
-/// A searchable command palette matching shadcn/ui's `Command` (cmdk).
+/// A searchable command palette.
 ///
 /// The shell is `flex h-full w-full flex-col overflow-hidden rounded-md
 /// bg-popover text-popover-foreground`. The search row is `flex h-9 items-center
@@ -427,8 +427,9 @@ class _ChooseIntent extends Intent {
 
 /// Shows a [CairnCommand] as a centred modal.
 ///
-/// shadcn/ui's `CommandDialog` renders the palette inside a Dialog with
-/// `overflow-hidden p-0`, i.e. the palette provides its own chrome.
+/// The palette already carries its own chrome — border, radius, popover
+/// surface — so the dialog around it contributes only the scrim and the
+/// centring, with no padding of its own.
 Future<void> showCairnCommandPalette({
   required BuildContext context,
   required List<CairnCommandItem> items,

@@ -6,15 +6,17 @@ import '../../tokens/colors.dart';
 import '../../tokens/radius.dart';
 import '../../tokens/shadows.dart';
 
-/// A value slider matching shadcn/ui's `Slider`.
+/// A value slider.
 ///
 /// The track is `h-1.5 rounded-full bg-muted` (6 logical pixels), the filled
 /// range is `bg-primary`, and the thumb is `size-4 rounded-full border
 /// border-primary bg-white shadow-sm` — 16 logical pixels.
 ///
-/// The thumb's fill is a literal `bg-white`, **not** a token, so it stays white
-/// in dark mode too. That is easy to get wrong by reflexively mapping it to
-/// `--background`, which would turn it near-black on a dark page.
+/// The thumb's fill is a literal white, **not** a token, so it stays white in
+/// dark mode too. Mapping it to the background token would be the reflexive
+/// choice and the wrong one: it would turn the thumb near-black on a dark page,
+/// where it has to read as a control sitting on top of the track rather than a
+/// hole punched through it.
 ///
 /// Hover and keyboard focus both grow a `ring-4` (4px) halo at `ring-ring/50`
 /// — note this is 4px, not the 3px ring the rest of the library uses.

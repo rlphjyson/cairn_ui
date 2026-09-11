@@ -5,9 +5,9 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   group('Oklch conversion', () {
     /// Every constant in [CairnColors] is baked as a literal so it can be
-    /// `const`. These tests re-derive each one from the `oklch()` string that
-    /// appears in shadcn/ui's registry, which is what makes the baked values
-    /// verifiable rather than merely asserted.
+    /// `const`. These tests re-derive each one from the `oklch()` string it
+    /// was authored as, which is what makes the baked values verifiable rather
+    /// than merely asserted.
     void expectOklch(
       String label,
       double l,
@@ -71,9 +71,10 @@ void main() {
     });
 
     test('lands exactly on Tailwind\'s published neutral ramp', () {
-      // An independent cross-check: shadcn/ui's OKLCH lightness steps are the
-      // same colours as Tailwind's `neutral` palette hex values. If the OKLab
-      // pipeline were subtly wrong these would drift by a few units.
+      // An independent cross-check: Cairn's achromatic OKLCH lightness steps
+      // are the same colours as Tailwind's published `neutral` palette hex
+      // values. If the OKLab pipeline were subtly wrong these would drift by a
+      // few units.
       expect(Oklch.toColor(0.985, 0, 0), const Color(0xFFFAFAFA)); // neutral-50
       expect(Oklch.toColor(0.97, 0, 0), const Color(0xFFF5F5F5)); // neutral-100
       expect(Oklch.toColor(0.922, 0, 0), const Color(0xFFE5E5E5)); // -200
@@ -115,8 +116,8 @@ void main() {
   });
 
   group('Radius scale', () {
-    test('uses shadcn/ui\'s current multiplier formula', () {
-      // --radius: 0.625rem = 10px.
+    test('derives every step from the base by multiplication', () {
+      // The base radius is 10 logical pixels.
       expect(CairnRadius.base, 10.0);
       expect(CairnRadius.sm, 6.0); // * 0.6
       expect(CairnRadius.md, 8.0); // * 0.8
@@ -202,9 +203,9 @@ void main() {
   });
 
   group('CairnTheme', () {
-    test('exposes shadcn/ui\'s registry defaults, not the docs site\'s', () {
-      // The docs site overrides --foreground and --primary to pure black; the
-      // registry (what `npx shadcn init` writes) uses 0.145 / 0.205.
+    test('uses near-black rather than pure black', () {
+      // Pure black against white is harsher than it needs to be; #0A0A0A and
+      // #171717 keep a hair of softness while still reading as black.
       expect(CairnTheme.light.foreground, const Color(0xFF0A0A0A));
       expect(CairnTheme.light.primary, const Color(0xFF171717));
       expect(CairnTheme.light.foreground, isNot(const Color(0xFF000000)));

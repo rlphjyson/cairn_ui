@@ -5,12 +5,11 @@ import '../../tokens/spacing.dart';
 import '../../tokens/typography.dart';
 import '../label/label.dart';
 
-/// A labelled form row matching shadcn/ui's `Form` field pattern.
+/// A labelled form row: label, control, description and error message.
 ///
-/// shadcn/ui's Form is a thin composition over `react-hook-form`: a `FormItem`
-/// wrapper with `grid gap-2`, a `FormLabel` that turns `text-destructive` when
-/// invalid, a `FormDescription` in `text-sm text-muted-foreground`, and a
-/// `FormMessage` carrying the validation error.
+/// The row is an 8px-gapped stack: a label that turns destructive when the
+/// field is invalid, the control itself, a muted description, and the
+/// validation message in its place.
 ///
 /// Cairn deliberately ships the **layout wrapper only** and no validation
 /// engine. Flutter already has [Form] and [FormField] with validators, and a

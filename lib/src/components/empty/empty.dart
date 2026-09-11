@@ -6,7 +6,7 @@ import '../../theme/cairn_theme.dart';
 import '../../tokens/spacing.dart';
 import '../../tokens/typography.dart';
 
-/// An empty-state placeholder matching shadcn/ui's `Empty`.
+/// An empty-state placeholder.
 ///
 /// `flex flex-col items-center justify-center gap-6 rounded-lg border-dashed
 /// p-6 text-center md:p-12` with a `size-16 rounded-md bg-muted` media slot, a

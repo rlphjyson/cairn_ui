@@ -2,8 +2,9 @@ import 'package:flutter/widgets.dart';
 
 /// The interaction states a Cairn component can be in.
 ///
-/// Mirrors the CSS pseudo-classes shadcn/ui styles against: `:hover`,
-/// `:focus-visible`, `:active` and `:disabled`.
+/// The four states every interactive component styles against, named after
+/// their web equivalents: `:hover`, `:focus-visible`, `:active` and
+/// `:disabled`.
 @immutable
 class CairnStates {
   /// Creates an interaction state snapshot.
@@ -55,9 +56,10 @@ typedef CairnStateBuilder =
 ///
 /// ### 1. `:focus-visible`, not `:focus`
 ///
-/// shadcn/ui draws its focus ring with `focus-visible:`, so clicking a button
-/// with a mouse must **not** show a ring, while tabbing to it must. Flutter's
-/// [FocusNode.hasFocus] cannot distinguish the two on its own.
+/// A focus ring is a keyboard affordance. Clicking a button with a mouse must
+/// therefore **not** draw one, while tabbing to it must — otherwise every
+/// click leaves a ring behind and users learn to ignore the signal entirely.
+/// Flutter's [FocusNode.hasFocus] cannot distinguish the two on its own.
 ///
 /// The signal Flutter does expose is [FocusManager.highlightMode], which is
 /// [FocusHighlightMode.traditional] once the user has interacted via keyboard
@@ -68,16 +70,19 @@ typedef CairnStateBuilder =
 ///
 /// ### 2. Space and Enter activate
 ///
-/// Radix primitives activate on both keys. Flutter's default [Shortcuts] map
-/// already binds them to [ActivateIntent] for focusable widgets, so this widget
-/// registers an [ActionDispatcher] entry rather than intercepting raw keys —
-/// that keeps it composable with a host app's own shortcuts.
+/// A focused control responds to both keys, which is what assistive technology
+/// and keyboard users expect of anything button-shaped. Flutter's default
+/// [Shortcuts] map already binds them to [ActivateIntent] for focusable
+/// widgets, so this widget registers an [ActionDispatcher] entry rather than
+/// intercepting raw keys — that keeps it composable with a host app's own
+/// shortcuts.
 ///
 /// ### 3. Disabled means inert
 ///
-/// `disabled:pointer-events-none` means a disabled control neither hovers nor
-/// receives focus. This widget removes it from the focus traversal order and
-/// ignores pointers entirely when [enabled] is false.
+/// A disabled control neither hovers nor receives focus — it is genuinely
+/// removed from the interaction surface, not merely painted grey. This widget
+/// takes it out of the focus traversal order and ignores pointers entirely
+/// when [enabled] is false.
 class CairnInteractive extends StatefulWidget {
   /// Creates an interaction wrapper.
   const CairnInteractive({
@@ -120,7 +125,8 @@ class CairnInteractive extends StatefulWidget {
   /// Whether this component can hold focus at all.
   ///
   /// Menu items set this false because their parent menu owns focus and moves
-  /// a highlight instead, matching Radix's roving-focus behaviour.
+  /// a highlight instead — one tab stop for the whole menu, arrow keys within
+  /// it.
   final bool canRequestFocus;
 
   /// The cursor to show on hover. Defaults to [SystemMouseCursors.click] when
@@ -339,16 +345,18 @@ class ExcludeFocusTraversal extends StatelessWidget {
       ExcludeFocus(excluding: false, child: child);
 }
 
-/// A [MouseCursor] helper matching `disabled:cursor-not-allowed`.
+/// The cursors Cairn shows over interactive surfaces.
 abstract final class CairnCursors {
   /// The cursor for interactive, enabled controls.
   static const MouseCursor interactive = SystemMouseCursors.click;
 
-  /// `disabled:cursor-not-allowed`.
+  /// The cursor for disabled controls: the pointer says "not allowed" before
+  /// the user has to discover it by clicking.
   static const MouseCursor disabled = SystemMouseCursors.forbidden;
 
-  /// `cursor-default` — used by menu items, which Radix marks
-  /// `cursor-default` rather than `cursor-pointer`.
+  /// The cursor for menu items, which keep the default arrow rather than the
+  /// pointing hand — inside an open menu everything is clickable, so a hand
+  /// cursor distinguishes nothing.
   static const MouseCursor menuItem = SystemMouseCursors.basic;
 
   /// `cursor-text` for text inputs.

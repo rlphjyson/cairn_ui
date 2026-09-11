@@ -13,7 +13,7 @@ enum CairnToggleGroupType {
   multiple,
 }
 
-/// A set of related toggles matching shadcn/ui's `ToggleGroup`.
+/// A set of related toggles, joined or spaced.
 ///
 /// `flex w-fit items-center rounded-md`, with the joined (`data-[spacing=0]`)
 /// presentation squaring off inner corners so the group reads as one control:

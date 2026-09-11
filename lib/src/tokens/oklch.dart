@@ -4,13 +4,16 @@ import 'dart:ui' show Color;
 /// Converts colors expressed in the CSS `oklch()` color function into
 /// Flutter [Color] values.
 ///
-/// shadcn/ui migrated its default theme from HSL to OKLCH. Every semantic color
-/// token in [CairnColors] is therefore authored as an `oklch()` triple, exactly
-/// as it appears in shadcn/ui's registry, and converted here.
+/// Cairn's palette is authored in OKLCH rather than HSL or raw hex. OKLCH is
+/// perceptually uniform: an equal step in `L` reads as an equal step in
+/// brightness at every hue, which is what keeps a light and a dark theme
+/// derived from the same ramp visually balanced. Every semantic color token in
+/// [CairnColors] is therefore written as an `oklch()` triple and converted
+/// here.
 ///
 /// Keeping the conversion in the package (rather than pasting pre-computed hex
 /// values) means the provenance of every color is checkable: the doc comment on
-/// each token records the literal `oklch()` string from shadcn/ui's source, and
+/// each token records the literal `oklch()` string it was authored as, and
 /// `test/tokens/oklch_test.dart` re-derives the baked constants from it.
 ///
 /// The pipeline is the standard one from Björn Ottosson's OKLab specification:
@@ -20,13 +23,13 @@ import 'dart:ui' show Color;
 /// ```
 ///
 /// Out-of-gamut results are clipped per channel, which matches how browsers
-/// render these particular tokens (all of shadcn/ui's defaults are in-gamut for
-/// sRGB, so clipping is a safety net rather than a routine operation).
+/// render these particular tokens (all of Cairn's default tokens are in-gamut
+/// for sRGB, so clipping is a safety net rather than a routine operation).
 abstract final class Oklch {
   /// Converts an `oklch(L C H)` triple to a [Color].
   ///
   /// [l] is perceptual lightness in the range 0..1, [c] is chroma (0 for the
-  /// achromatic greys that make up most of shadcn/ui's neutral base), and [h]
+  /// achromatic greys that make up most of Cairn's neutral base), and [h]
   /// is the hue angle in degrees. [opacity] maps to the `/ <alpha>` component
   /// of the CSS function and defaults to fully opaque.
   ///

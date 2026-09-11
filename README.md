@@ -1,9 +1,9 @@
 # Cairn UI
 
-A Flutter component library rebuilt to [shadcn/ui](https://ui.shadcn.com)'s
-measurements — the same spacing, radii, colour tokens, type scale, shadows and
-focus-ring treatment, translated from shadcn/ui's actual Tailwind source into
-Flutter and held in place by golden tests.
+A modern, accessible Flutter component library built on a design token system
+that is actually engineered: colours authored in OKLCH with a matched dark
+theme, a radius scale derived proportionally from a single number, a type scale
+that survives text scaling, and golden tests holding all of it in place.
 
 45 components. No runtime dependencies beyond Flutter itself.
 
@@ -95,114 +95,132 @@ cd example && flutter run
 
 ---
 
-## What "pixel-perfect" honestly means here
+## How Cairn is built
 
-Flutter rasterises with Skia/Impeller; a browser rasterises with its own engine
-and its own font shaping. The two will **never** produce byte-identical
-screenshots, and chasing that would be wasted effort. So this project does not
-claim screenshot-identical rendering to ui.shadcn.com. What it does claim is
-narrower and checkable:
+Most component libraries are a pile of widgets that happen to look alike.
+Cairn is a token system with widgets on top, which is a different thing: the
+consistency is structural rather than maintained by hand. Three claims, each
+of them checkable rather than aspirational:
 
-1. **Every dimension is derived from shadcn/ui's real, current source** rather
-   than eyeballed or remembered.
-2. **Every conversion between CSS and Flutter semantics is explicit** and
-   documented where the two disagree — of which there are more than you would
-   expect.
+1. **No component hardcodes a number that should come from a token.** Every
+   padding, radius, duration and colour resolves through the token layer.
+2. **Every place a CSS-shaped design idea meets Flutter's rendering model is
+   resolved explicitly** and documented where the two disagree — of which there
+   are more than you would expect.
 3. **Golden tests lock the result down**, so the implementation cannot drift.
 
-### 1. Where the numbers come from
+### 1. The token layer
 
-The tokens were extracted from shadcn/ui's live repository and registry, not
-from memory:
-
-| Source | What was taken from it |
+| File | Contents |
 | --- | --- |
-| `shadcn-ui/ui` → `apps/v4/registry/new-york-v4/ui/*.tsx` | Per-component Tailwind class strings (padding, height, gap, radius, font size, shadow, ring, transition) |
-| `https://ui.shadcn.com/r/colors/neutral.json` | The canonical `cssVars.light` / `cssVars.dark` token values |
-| `shadcn-ui/ui` → `packages/shadcn/src/utils/updaters/update-css-vars.ts` | The radius formula the CLI actually writes |
-| Tailwind CSS v4 docs | The spacing base, type scale and box-shadow values |
+| `lib/src/tokens/oklch.dart` | `oklch()` → `Color` conversion |
+| `lib/src/tokens/colors.dart` | All 19 semantic slots, light and dark, each annotated with the `oklch()` string it was authored as |
+| `lib/src/tokens/spacing.dart` | A `0.25rem` (4 logical pixel) base scale |
+| `lib/src/tokens/radius.dart` | The proportional radius scale, and `CairnRadiusScale` for custom bases |
+| `lib/src/tokens/typography.dart` | Font sizes, line-height ratios, weights, tracking |
+| `lib/src/tokens/shadows.dart` | The shadow scale plus the CSS-blur conversion |
+| `lib/src/tokens/motion.dart` | Durations and easing curves |
 
-Each token file records the source string next to the converted value, e.g.:
+Each colour records its authored value next to the converted constant:
 
 ```dart
-/// `--primary: oklch(0.205 0 0)` — `#171717` (neutral-900).
+/// `primary` = `oklch(0.205 0 0)` — `#171717` (neutral-900).
 static const Color lightPrimary = Color(0xFF171717);
 ```
 
-**Things that surprised me while doing this**, and that stale knowledge gets
-wrong:
+Four decisions in there are worth calling out, because each of them is a place
+where the obvious choice is the worse one.
 
-- **shadcn/ui is on OKLCH, not HSL.** The default theme moved off HSL during the
-  Tailwind v4 rework. Anything still converting `hsl(var(--primary))` is out of
-  date.
-- **The radius scale is multiplier-based now.** The current CLI writes
-  `--radius-sm: calc(var(--radius) * 0.6)` … `* 0.8`, `* 1.4`, not the older
-  `calc(var(--radius) - 4px)` / `- 2px` / `+ 4px`. At the default
-  `--radius: 0.625rem` the two happen to agree exactly (6 / 8 / 10 / 14px),
-  which is presumably why the change went unnoticed — they only diverge once
-  `--radius` is customised. `CairnRadius.scaled()` implements the multiplier
-  form.
-- **The docs site's theme is not the registry's theme.**
-  `apps/v4/app/globals.css` overrides `--foreground` and `--primary` to pure
-  black (`oklch(0% 0 0)`) for the site's own branding. The registry — what
-  `npx shadcn init` actually writes into your project — uses `0.145` and
-  `0.205`. Cairn follows the registry.
-- **`--destructive-foreground` was dropped.** Current components hardcode
-  `text-white` on destructive fills instead of reading a variable.
-- A useful correctness check fell out of the OKLCH conversion: every achromatic
-  step lands *exactly* on Tailwind's published `neutral` hex ramp
-  (`oklch(0.145 0 0)` → `#0A0A0A` = neutral-950, `oklch(0.922 0 0)` → `#E5E5E5`
-  = neutral-200, and so on). `test/tokens/tokens_test.dart` asserts this.
+- **Colours are authored in OKLCH, not HSL or hex.** OKLCH is perceptually
+  uniform: an equal step in lightness reads as an equal step in brightness at
+  every hue. That is what lets the light and dark themes be two readings of one
+  ramp and stay balanced by construction rather than by eye. The conversion
+  lives in the package, so the provenance of every colour is checkable —
+  `test/tokens/oklch_test.dart` re-derives every baked constant from its
+  `oklch()` string.
 
-### 2. Where CSS and Flutter genuinely disagree
+- **The radius scale is multiplier-based.** Every step is a fixed multiple of a
+  single base: `0.6`, `0.8`, `1`, `1.4`, `1.8`, `2.2`, `2.6`. The obvious
+  alternative — pixel offsets from the base (`base - 4`, `base + 4`) — gives
+  identical numbers at the 10px default and falls apart the moment the base is
+  retuned: a compact 4px theme would produce a *negative* small radius.
+  `CairnRadius.scaled()` stays proportional at any base, so changing
+  `CairnTheme.radius` rescales the whole library coherently.
 
-These are the conversions that are wrong if you copy the numbers across
-literally. Each is implemented and commented in the source.
+- **The achromatic ramp lands exactly on Tailwind's published `neutral`
+  palette.** `oklch(0.145 0 0)` is `#0A0A0A` (neutral-950), `oklch(0.922 0 0)`
+  is `#E5E5E5` (neutral-200), and so on down the scale. That is both an
+  independent check that the OKLab pipeline is correct — a subtly wrong matrix
+  would drift by a few units and miss — and a convenience, since Cairn's greys
+  then sit flush against a Tailwind-flavoured design. `test/tokens/tokens_test.dart`
+  asserts it.
+
+- **Tokens are named for their role, never their appearance.** A component asks
+  for *the foreground that belongs on a destructive surface*, not for white.
+  That is the whole reason overriding one slot re-themes everything that reads
+  it, and it is why `destructiveForeground` exists as a slot at all rather than
+  being a hardcoded white inside Button and Badge.
+
+### 2. Where CSS intuitions and Flutter's rendering model disagree
+
+Cairn's tokens are authored in the vocabulary design systems actually use —
+`rem`, `oklch()`, `box-shadow`, line heights in absolute units. Converting that
+vocabulary into Flutter is where the interesting bugs live, because several of
+these conversions are wrong if you carry the numbers across literally. Each is
+implemented and commented in the source.
 
 **Blur radius means different things.** CSS defines a shadow's blur as a
 Gaussian with standard deviation **half** the stated radius. Flutter converts
-`BoxShadow.blurRadius` to a sigma with `radius * 0.57735 + 0.5`. Pasting CSS's
-`6px` into `blurRadius` yields a sigma ~50% too wide. `CairnShadows.cssBlur()`
-inverts Flutter's formula so the rendered sigma matches the browser's.
+`BoxShadow.blurRadius` to a sigma with `radius * 0.57735 + 0.5`. Putting a CSS
+`6px` blur straight into `blurRadius` yields a sigma ~50% too wide.
+`CairnShadows.cssBlur()` inverts Flutter's formula so the rendered sigma is the
+one the design called for.
 
 **Outer shadows are clipped in CSS and not in Flutter.** CSS never paints an
 outer `box-shadow` through its element; Flutter paints a blurred filled copy of
-the shape behind the box with no clip. On shadcn/ui's `bg-transparent` form
-controls that turns `shadow-xs` into a grey wash across the field — and turns
-`focus-visible:ring-[3px]` (which compiles to `box-shadow: 0 0 0 3px`) into a
-solid fill over the *entire* control instead of a 3px outline.
-`CairnShadowed` paints shadows through a clip that removes the shape's interior.
+the shape behind the box with no clip. On a transparent form control — which is
+most of Cairn's — that turns the smallest shadow in the scale into a grey wash
+across the field, and turns the hard 3px focus ring into a solid fill over the
+*entire* control instead of an outline around it. `CairnShadowed` paints shadows
+through a clip that removes the shape's interior.
 
-**Tailwind's `/N` modifier scales alpha, it does not set it.** `bg-input/30`
-compiles to `color-mix(in oklab, var(--input) 30%, transparent)`. For an opaque
-token that is the same as setting alpha to 0.30 — but shadcn/ui's dark
-`--input` is already `oklch(1 0 0 / 15%)`, so `dark:bg-input/30` is white at
-**4.5%**, not 30%. `withOpacityModifier()` multiplies.
+**A partial-strength token scales alpha, it does not set it.** "The input
+colour at 30%" means 30% *of what it already is*. For an opaque token that is
+the same as setting alpha to 0.30 — but Cairn's dark `input` token is already
+`oklch(1 0 0 / 15%)`, so 30% of it is white at **4.5%**, not 30%.
+`withOpacityModifier()` multiplies. Getting this wrong is a six-times-too-strong
+grey fill on every dark-mode form control.
 
 **`Container(alignment:)` expands to fill.** A Flutter `Container` with a
-non-null `alignment` grows to its bounded constraints. Used to centre a
-button's label it silently breaks `inline-flex` / `w-fit` sizing, stretching
-every button to its parent's width. Cairn centres via the child's own
-`mainAxisAlignment` or a `Center(widthFactor: 1)` instead, and
+non-null `alignment` grows to its bounded constraints. Used to centre a button's
+label it silently stretches every button to its parent's width — the opposite of
+what a button should do, which is size to its own content. Cairn centres via the
+child's own `mainAxisAlignment` or a `Center(widthFactor: 1)` instead, and
 `test/components/sizing_test.dart` guards it.
 
-**Line height is a ratio, not a length.** Tailwind pairs a font size with an
-absolute line height (`text-sm` is `0.875rem / 1.25rem`). Flutter's
-`TextStyle.height` is a *multiple*, so the conversion is `20 / 14`. Storing the
-ratio keeps intrinsic heights correct when the user scales text.
+**Line height is a ratio, not a length.** A type scale pairs a font size with an
+absolute line height (14px text on a 20px line). Flutter's `TextStyle.height` is
+a *multiple*, so the conversion is `20 / 14`. Storing the ratio is what keeps
+intrinsic heights correct when the user scales text — the pixel value would
+silently stop matching.
 
-**`leading-none` is not Flutter's default.** Card, Dialog and Label titles use
-`line-height: 1`. Flutter's default comes from font metrics (~1.2), so it has
-to be set explicitly or titles sit low.
+**A line height of exactly 1 is not Flutter's default.** Card, Dialog and Label
+titles want their line box to be precisely the font size, so a single-line
+heading sits optically centred against the controls beside it. Flutter's default
+comes from font metrics (~1.2), so it has to be set explicitly or titles sit
+low.
 
-**Some values are deliberately odd.** The Switch track is `h-[1.15rem]` —
-**18.4** logical pixels. The Tabs track is `p-[3px]`. The Checkbox radius is a
-literal `rounded-[4px]`, not a `--radius` step. Rounding any of these to a
-"nicer" number is exactly the drift this library exists to avoid.
+**Some values are deliberately not round.** The Switch track is **18.4** logical
+pixels, because a 16px thumb has to clear a 1px border on both sides with a hair
+of room and that is where the arithmetic lands. The Tabs track padding is 3px,
+not a spacing step, because that is what makes the active tab sit flush inside
+it. The Checkbox radius is a literal 4px rather than a scale step, because at
+16px square a proportional radius rounds the box into a blob. Rounding any of
+these to a nicer number is exactly the drift this library exists to avoid.
 
 ### 3. Golden tests as the enforcement mechanism
 
-Token extraction makes the *first* implementation correct. Golden tests are
+The token layer is what makes the first implementation correct. Golden tests are
 what keep it correct.
 
 `test/goldens/goldens_test.dart` renders every component as a **sheet** — all
@@ -214,10 +232,10 @@ Two things make this reliable rather than flaky:
 
 **Fonts are bundled, not borrowed from the OS.** `flutter test` loads no real
 font by default — text lays out with a placeholder where every glyph is an
-identical box, which tells you nothing about typography. Cairn ships Geist (the
-typeface shadcn/ui's own site uses, SIL OFL 1.1) under `test/fonts/` and
-registers it in `test/flutter_test_config.dart`. Because the font comes from
-the repository, text shapes identically everywhere.
+identical box, which tells you nothing about typography. Cairn ships Geist
+(SIL OFL 1.1) under `test/fonts/` and registers it in
+`test/flutter_test_config.dart`. Because the font comes from the repository,
+text shapes identically everywhere.
 
 **Goldens are generated and verified on one platform.** Even with identical
 fonts, sub-pixel anti-aliasing can differ between operating systems. Rather
@@ -266,8 +284,9 @@ MaterialApp(
 
 `materialTheme()` also aligns Material's own defaults with the Cairn tokens —
 scaffold background, `ColorScheme`, text selection colours, no ink splash
-(shadcn/ui has no ripple), and Material 3's *filled* `TextField` default turned
-off, since shadcn/ui inputs are `bg-transparent`.
+(Cairn has no ripple; its interactions are colour and shadow transitions only),
+and Material 3's *filled* `TextField` default turned off, since Cairn inputs are
+transparent with the border doing the work.
 
 If you would rather wire it up yourself:
 
@@ -294,48 +313,35 @@ Components resolve tokens through `CairnTheme.of(context)`, which falls back to
 `CairnTheme.light` rather than throwing — a widget dropped into an app with no
 extension registered still renders correctly.
 
-### The token layer
-
-| File | Contents |
-| --- | --- |
-| `lib/src/tokens/oklch.dart` | `oklch()` → `Color` conversion |
-| `lib/src/tokens/colors.dart` | All 19 semantic slots, light and dark, each annotated with its source `oklch()` string |
-| `lib/src/tokens/spacing.dart` | Tailwind's `0.25rem` scale |
-| `lib/src/tokens/radius.dart` | The `--radius` scale and `CairnRadiusScale` for custom bases |
-| `lib/src/tokens/typography.dart` | Font sizes, line-height ratios, weights, tracking |
-| `lib/src/tokens/shadows.dart` | The shadow scale plus the CSS-blur conversion |
-| `lib/src/tokens/motion.dart` | Durations and Tailwind's easing curves |
-
-No component hardcodes a number that should come from a token.
-
 ---
 
 ## Accessibility
 
-shadcn/ui is built on Radix UI primarily *for their accessibility semantics*,
-so matching the visuals without matching the behaviour would miss the point.
+A component library that looks right and behaves wrong is worse than no library
+at all, because it makes the wrong thing easy. Cairn treats keyboard and screen
+reader behaviour as part of each component's definition rather than as a later
+pass.
 
-- **`:focus-visible`, not `:focus`.** shadcn/ui draws its ring with
-  `focus-visible:`, so clicking a button must not show a ring while tabbing to
-  it must. Flutter's `hasFocus` cannot distinguish the two, so
-  `CairnInteractive` combines focus state with
+- **`:focus-visible`, not `:focus`.** A focus ring is a keyboard affordance:
+  clicking a button must not show one, tabbing to it must. Flutter's `hasFocus`
+  cannot distinguish the two, so `CairnInteractive` combines focus state with
   `FocusManager.highlightMode` *and* tracks whether the focus change came from
   a pointer press.
-- **Space and Enter both activate**, matching Radix, wired through
-  `ActivateIntent` so it composes with a host app's own shortcuts.
+- **Space and Enter both activate**, wired through `ActivateIntent` so it
+  composes with a host app's own shortcuts rather than intercepting raw keys.
 - **Focus trapping and restore** in Dialog, Alert Dialog, Sheet and Drawer.
   These push a `PopupRoute`, which gets Flutter's per-route `FocusScope` — plus
-  back-gesture dismissal, which Radix has no equivalent of. Anchored surfaces
+  back-gesture dismissal, which a mobile user will try first. Anchored surfaces
   (Popover, Dropdown Menu) use `OverlayPortal` instead so they stay out of the
   navigation stack.
-- **Escape dismisses** every overlay — except Alert Dialog, which by design
-  demands an explicit choice.
+- **Escape dismisses** every overlay — except Alert Dialog, which exists
+  precisely to demand an explicit choice.
 - **Roving focus** in Radio Group and Tabs: one tab stop for the group, arrow
-  keys to move within it.
+  keys to move within it, so a ten-option group does not cost ten tab presses.
 - **Slider** exposes increase/decrease actions with correct `increasedValue` /
   `decreasedValue` announcements, and supports arrow keys plus Home/End.
-- **`disabled:pointer-events-none`** genuinely removes the subtree from hit
-  testing, not just the component itself.
+- **Disabled means inert.** A disabled control is genuinely removed from hit
+  testing and focus traversal, not just painted grey — and so is its subtree.
 - **Reduced motion** is honoured by Skeleton, Spinner and the Input OTP caret.
 
 ---
@@ -358,7 +364,7 @@ so matching the visuals without matching the behaviour would miss the point.
 | Checkbox | Tristate (indeterminate) supported |
 | Collapsible | The primitive under Accordion |
 | Combobox | Searchable select |
-| Command | cmdk-style palette, keyword matching |
+| Command | Command palette with keyword matching |
 | Context Menu | Right-click and long-press, anchored to the pointer |
 | Data Table | Sort, filter, paginate — built on Table |
 | Date Picker | Calendar in a Popover |
@@ -368,10 +374,10 @@ so matching the visuals without matching the behaviour would miss the point.
 | Empty | Dashed border (hand-painted; Flutter's `Border` can't) |
 | Form Field | Layout only — Flutter already has `Form` validation |
 | Hover Card | Open and close grace periods |
-| Input | `h-9`, transparent, 3px focus ring |
+| Input | 36px tall, transparent, 3px focus ring |
 | Input OTP | One hidden field behind painted slots, so paste works |
-| Kbd / Kbd Group | `font-sans`, not monospace |
-| Label | `leading-none` |
+| Kbd / Kbd Group | Sans, not monospace |
+| Label | Line height of exactly 1 |
 | Menubar | Hover-to-switch once open |
 | Menu primitives | Panel, item, checkbox item, label, separator |
 | Navigation Menu | Arbitrary panel content |
@@ -383,13 +389,13 @@ so matching the visuals without matching the behaviour would miss the point.
 | Select | Menu matches trigger width |
 | Separator | Decorative or semantic |
 | Sheet | Four sides, asymmetric 500ms open / 300ms close |
-| Skeleton | `animate-pulse` curve, respects reduced motion |
-| Slider | Keyboard driven, `ring-4` halo |
-| Spinner | `animate-spin`, respects reduced motion |
-| Switch | The literal `h-[1.15rem]` track |
-| Table | `p-2` cells, `h-10` header |
+| Skeleton | Two-second pulse, respects reduced motion |
+| Slider | Keyboard driven, 4px halo |
+| Spinner | Constant-speed rotation, respects reduced motion |
+| Switch | The derived 18.4px track |
+| Table | 8px cells, 40px header |
 | Tabs | Filled and line variants |
-| Textarea | Auto-grows, matching `field-sizing-content` |
+| Textarea | Auto-grows with its content |
 | Toast | Host outlives the route that fired it |
 | Toggle / Toggle Group | Single and multiple, joined or spaced |
 | Tooltip | Opens on hover *and* keyboard focus |
@@ -424,24 +430,12 @@ maths in `test/tokens/`.
 
 ## Credit
 
-Cairn UI is an **independent implementation**. It contains no code from
-shadcn/ui or Radix UI — React/Tailwind and Flutter/Dart share no code, so there
-was nothing to copy even in principle. What was taken is *measurements*:
-padding, radii, colour values, durations, and the behavioural contracts those
-projects define.
-
-- **[shadcn/ui](https://ui.shadcn.com)** by [shadcn](https://github.com/shadcn)
-  — the design language, the token system and the component catalogue this
-  library measures itself against. MIT licensed.
-- **[Radix UI](https://www.radix-ui.com)** — the accessibility behaviour
-  shadcn/ui is built on, and the contract Cairn reproduces in Flutter (focus
-  management, roving focus, dismissal semantics). MIT licensed.
 - **[Geist](https://vercel.com/font)** by Vercel — bundled under `test/fonts/`
   for deterministic golden tests, SIL OFL 1.1.
 - **[Lucide](https://lucide.dev)** — the icon geometry redrawn in
   `lib/src/internal/icons.dart`. ISC licensed.
 
-Cairn is not affiliated with or endorsed by any of them. Full third-party
+Cairn is not affiliated with or endorsed by either project. Full third-party
 attribution is in [NOTICE.md](NOTICE.md).
 
 ## Licence

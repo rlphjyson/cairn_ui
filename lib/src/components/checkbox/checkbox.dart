@@ -7,18 +7,20 @@ import '../../theme/cairn_theme.dart';
 import '../../tokens/motion.dart';
 import '../../tokens/shadows.dart';
 
-/// A checkbox matching shadcn/ui's `Checkbox`.
+/// A checkbox, optionally with an indeterminate third state.
 ///
 /// `size-4 shrink-0 rounded-[4px] border border-input shadow-xs` — 16 logical
-/// pixels square with a 4px radius. Note that radius is a **literal
-/// `rounded-[4px]`**, not a step on the `--radius` scale, so it stays 4px even
-/// if a theme changes `--radius`.
+/// pixels square with a 4px radius. That radius is a **literal 4px**, not a
+/// step on the radius scale, so it holds even when a theme retunes its base: at
+/// 16px square, a proportionally scaled radius would round the box into a
+/// blob.
 ///
 /// Checking swaps to `bg-primary border-primary text-primary-foreground` and
 /// draws a 14px (`size-3.5`) check.
 ///
-/// Supports a tristate (indeterminate) value, matching Radix's `"indeterminate"`
-/// checked state, which renders a minus instead of a check.
+/// Supports a tristate (indeterminate) value, rendered as a minus instead of a
+/// check — the state a "select all" box needs when only some of the boxes it
+/// governs are ticked.
 ///
 /// ```dart
 /// CairnCheckbox(
@@ -74,7 +76,7 @@ class CairnCheckbox extends StatelessWidget {
 
   bool get _enabled => onChanged != null;
 
-  /// Radix cycles unchecked -> checked -> indeterminate -> unchecked.
+  /// In tristate mode the cycle is unchecked -> checked -> indeterminate.
   bool? get _next {
     if (!tristate) return !(value ?? false);
     return switch (value) {

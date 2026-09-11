@@ -9,8 +9,8 @@ void main() {
     testWidgets('a button hugs its label rather than filling the row', (
       WidgetTester tester,
     ) async {
-      // shadcn/ui buttons are `inline-flex`, i.e. width-of-content. Given a
-      // wide but loose box they must not stretch.
+      // A button sizes to its own content, not to its parent. Given a wide
+      // but loose box it must not stretch to fill it.
       await tester.pumpWidget(
         harness(
           center: false,

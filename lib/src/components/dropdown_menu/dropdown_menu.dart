@@ -4,14 +4,16 @@ import '../../internal/anchored_overlay.dart';
 import '../../internal/popover_layer.dart';
 import '../menu/menu.dart';
 
-/// A menu anchored to a trigger, matching shadcn/ui's `DropdownMenu`.
+/// A menu anchored to a trigger.
 ///
 /// The panel is a [CairnMenuPanel] — `min-w-[8rem] rounded-md border bg-popover
 /// p-1 shadow-md` — positioned 4px from the trigger and aligned to its start
-/// edge, which is Radix's default for dropdowns (unlike Popover, which centres).
+/// edge rather than centred on it, so a wide menu under a narrow trigger still
+/// lines up with the text the user was reading.
 ///
-/// Items are closed over automatically: choosing one dismisses the menu, which
-/// is Radix's default `onSelect` behaviour.
+/// Choosing an item dismisses the menu automatically. A menu that stayed open
+/// after a selection would leave the user to close it themselves, which is a
+/// step nobody wants.
 ///
 /// ```dart
 /// final menu = CairnOverlayController();
@@ -58,7 +60,7 @@ class CairnDropdownMenu extends StatelessWidget {
   /// The preferred side.
   final CairnSide side;
 
-  /// The cross-axis alignment. Radix defaults dropdowns to `start`.
+  /// The cross-axis alignment. Dropdowns default to `start`.
   final CairnAlign align;
 
   /// The gap between trigger and panel.

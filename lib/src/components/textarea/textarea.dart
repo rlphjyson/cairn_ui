@@ -8,15 +8,15 @@ import '../../tokens/shadows.dart';
 import '../../tokens/spacing.dart';
 import '../../tokens/typography.dart';
 
-/// A multi-line text field matching shadcn/ui's `Textarea`.
+/// A multi-line text field.
 ///
 /// `min-h-16 w-full rounded-md border border-input bg-transparent px-3 py-2
 /// text-sm shadow-xs` — a 64 logical pixel minimum height with 12px horizontal
 /// and 8px vertical padding.
 ///
-/// shadcn/ui uses CSS `field-sizing-content` so the box grows with its content.
-/// Flutter has no equivalent property, but [TextField] with a null `maxLines`
-/// produces the same behaviour, which is what [autoGrow] enables.
+/// The box grows with its content rather than making the user scroll inside a
+/// fixed frame — the web spells that `field-sizing-content`; in Flutter it is
+/// [TextField] with a null `maxLines`, which is what [autoGrow] enables.
 ///
 /// ```dart
 /// CairnTextarea(

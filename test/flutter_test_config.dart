@@ -17,8 +17,8 @@ import 'package:flutter_test/flutter_test.dart';
 /// way tell you nothing about typography, and the moment a real font *is*
 /// present the images all change.
 ///
-/// So Cairn bundles Geist (the typeface shadcn/ui's own site uses, SIL OFL 1.1)
-/// under `test/fonts/` and registers it here for every test. Because the font
+/// So Cairn bundles Geist (SIL OFL 1.1) under `test/fonts/` and registers it
+/// here for every test. Because the font
 /// comes from the repository rather than the host operating system, text shapes
 /// identically on Windows, macOS and the Linux CI runner.
 ///

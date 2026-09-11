@@ -37,7 +37,7 @@ class CairnColumn<T> {
   final Comparable<Object> Function(T row)? sortKey;
 }
 
-/// A data table matching shadcn/ui's `Table`.
+/// A data table.
 ///
 /// Header cells are `h-10 px-2 text-left align-middle font-medium
 /// whitespace-nowrap text-foreground`; body cells are `p-2 align-middle`.

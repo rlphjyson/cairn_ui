@@ -4,14 +4,15 @@ import '../../theme/cairn_theme.dart';
 import '../../tokens/motion.dart';
 import '../../tokens/radius.dart';
 
-/// A progress bar matching shadcn/ui's `Progress`.
+/// A progress bar, determinate or indeterminate.
 ///
-/// `relative h-2 w-full overflow-hidden rounded-full bg-primary/20` with a
-/// `bg-primary` indicator — an 8 logical pixel track whose background is the
-/// primary colour at 20% alpha, not the `--muted` token.
+/// An 8 logical pixel fully-rounded track carrying a primary-coloured
+/// indicator. The track is the primary colour at 20% alpha rather than the
+/// muted token, so the filled and unfilled halves read as one object at two
+/// strengths instead of two unrelated greys.
 ///
-/// Passing null to [value] renders an indeterminate bar, which shadcn/ui itself
-/// does not provide but which is a normal expectation in a Flutter app.
+/// Passing null to [value] renders an indeterminate bar, for the very common
+/// case of work whose duration is not known up front.
 ///
 /// ```dart
 /// const CairnProgress(value: 0.6);

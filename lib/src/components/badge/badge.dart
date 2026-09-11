@@ -23,7 +23,7 @@ enum CairnBadgeVariant {
   ghost,
 }
 
-/// A small status pill matching shadcn/ui's `Badge`.
+/// A small status pill.
 ///
 /// `inline-flex w-fit items-center gap-1 rounded-full border border-transparent
 /// px-2 py-0.5 text-xs font-medium` — a fully rounded pill with 8px horizontal

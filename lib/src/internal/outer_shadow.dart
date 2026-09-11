@@ -12,16 +12,15 @@ import 'package:flutter/widgets.dart';
 /// the box that is not opaque lets the shadow show through.
 ///
 /// That difference is invisible on an opaque component and very visible on a
-/// transparent one, which is most of shadcn/ui's form controls:
+/// transparent one, which is most of Cairn's form controls:
 ///
-/// * `Input`, `Textarea`, `Select`, `Combobox` and the Date Picker trigger are
-///   all `bg-transparent shadow-xs` in light mode. Flutter renders the 5%-black
-///   `shadow-xs` straight through the middle, turning a white field a dirty
-///   grey.
-/// * The focus ring is worse. `focus-visible:ring-[3px] ring-ring/50` compiles
-///   to `box-shadow: 0 0 0 3px`, i.e. a hard unblurred ring. Painted the
-///   Flutter way behind a transparent control it fills the entire control with
-///   50%-alpha ring colour instead of drawing a 3px outline.
+/// * Input, Textarea, Select, Combobox and the Date Picker trigger all have a
+///   transparent fill and the smallest shadow in the scale. Painted the Flutter
+///   way, that 5%-black shadow renders straight through the middle and turns a
+///   white field a dirty grey.
+/// * The focus ring is worse. It is a hard, unblurred 3px outset at 50% alpha —
+///   painted the Flutter way behind a transparent control, it floods the entire
+///   control with ring colour instead of drawing an outline around it.
 ///
 /// ## How it works
 ///

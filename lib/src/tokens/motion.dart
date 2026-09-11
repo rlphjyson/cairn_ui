@@ -1,19 +1,20 @@
 import 'package:flutter/widgets.dart';
 
-/// Transition durations and easing curves matching shadcn/ui's motion.
+/// Cairn's transition durations and easing curves.
 ///
-/// Tailwind's `transition-*` utilities default to `150ms` with the
-/// `cubic-bezier(0.4, 0, 0.2, 1)` easing curve — the same curve CSS authors
-/// know as `ease-in-out` in Tailwind's naming (it is *not* the CSS keyword
-/// `ease-in-out`, which is `cubic-bezier(0.42, 0, 0.58, 1)`).
+/// The default is `150ms` on a `cubic-bezier(0.4, 0, 0.2, 1)` curve — an
+/// asymmetric ease that leaves quickly and arrives slowly, which is what makes
+/// a hover or press state feel responsive rather than sluggish. Note that this
+/// is *not* the CSS keyword `ease-in-out` (`cubic-bezier(0.42, 0, 0.58, 1)`),
+/// which is symmetric and reads as noticeably lazier on short transitions.
 ///
-/// Individual shadcn/ui components override the duration where it matters:
-/// Dialog and Alert Dialog use `duration-200`, Sheet uses asymmetric
-/// `data-[state=open]:duration-500` / `data-[state=closed]:duration-300`, and
-/// Accordion animates its height over `200ms`.
+/// Individual components override the duration where the distance travelled
+/// justifies it: Dialog and Alert Dialog use 200ms, Accordion animates its
+/// height over 200ms, and Sheet is deliberately asymmetric — 500ms to open,
+/// 300ms to close.
 ///
-/// Flutter has no built-in [Curve] for Tailwind's default bezier, so [standard]
-/// constructs it with [Cubic] using the exact control points.
+/// Flutter ships no built-in [Curve] with those control points, so [standard]
+/// constructs one with [Cubic].
 abstract final class CairnMotion {
   /// `duration-75`.
   static const Duration d75 = Duration(milliseconds: 75);

@@ -28,7 +28,7 @@ class CairnCrumb {
   final Widget? icon;
 }
 
-/// A navigation trail matching shadcn/ui's `Breadcrumb`.
+/// A navigation trail showing the path to the current page.
 ///
 /// `flex flex-wrap items-center gap-1.5 text-sm text-muted-foreground
 /// sm:gap-2.5` — crumbs are muted, the current page is `text-foreground`, and

@@ -106,12 +106,16 @@ enum CairnMenuItemVariant {
 /// text-sm select-none focus:bg-accent focus:text-accent-foreground` — 8px
 /// horizontal and 6px vertical padding with a `rounded-sm` (6px) highlight.
 ///
-/// Note `cursor-default`: Radix menu items deliberately do **not** show a
-/// pointer cursor, which is a small detail that reads as wrong if missed.
+/// Note the cursor stays the default arrow rather than becoming a pointing
+/// hand. Inside an open menu every row is clickable, so a hand cursor
+/// distinguishes nothing — and its absence is one of those details that reads
+/// as wrong only when it is missing.
 ///
-/// Highlighting follows the pointer as well as the keyboard, matching how a
-/// native menu behaves — Radix drives this with `data-highlighted` rather than
-/// CSS `:hover`.
+/// Highlighting follows the pointer *and* the keyboard through one shared
+/// highlight index, rather than letting hover and arrow keys each maintain
+/// their own. That is how a native menu behaves: moving the mouse takes the
+/// highlight away from where the arrow keys left it, instead of lighting up two
+/// rows at once.
 class CairnMenuItem extends StatelessWidget {
   /// Creates a menu item.
   const CairnMenuItem({

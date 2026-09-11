@@ -2,17 +2,16 @@ import 'package:flutter/widgets.dart';
 
 import '../../theme/cairn_theme.dart';
 
-/// A scroll container with a slim styled scrollbar, matching shadcn/ui's
-/// `ScrollArea`.
+/// A scroll container with a slim, quiet scrollbar.
 ///
 /// The scrollbar track is `w-2.5` (10 logical pixels) with `p-px` padding and
 /// the thumb is `rounded-full bg-border` — noticeably slimmer and quieter than
 /// a platform scrollbar, which is the point of the component.
 ///
-/// Radix renders a custom scrollbar because browsers historically could not
-/// style native ones. Flutter *can* style [Scrollbar], so this configures the
-/// framework's rather than reimplementing scrolling — reimplementing would give
-/// up momentum physics, trackpad handling and accessibility for no visual gain.
+/// This configures Flutter's [Scrollbar] rather than reimplementing scrolling.
+/// The web has to hand-roll a scrollbar to restyle one; Flutter does not, and
+/// reimplementing here would give up momentum physics, trackpad handling and
+/// accessibility for no visual gain whatsoever.
 ///
 /// ```dart
 /// CairnScrollArea(
@@ -75,7 +74,7 @@ class _CairnScrollAreaState extends State<CairnScrollArea> {
       height: widget.height,
       width: widget.width,
       child: ScrollConfiguration(
-        // Suppress the platform's own overscroll glow; shadcn/ui has none.
+        // Suppress the platform's own overscroll glow; Cairn has none.
         behavior: const _NoGlowBehavior(),
         child: RawScrollbar(
           controller: _controller,

@@ -13,13 +13,14 @@ import '../../tokens/typography.dart';
 import '../calendar/calendar.dart';
 import '../popover/popover.dart';
 
-/// A date field matching shadcn/ui's `DatePicker` recipe.
+/// A date field: a Calendar in a Popover, behind a button-shaped trigger.
 ///
-/// shadcn/ui does not ship a Date Picker component — it documents a *pattern*:
-/// an outline Button trigger whose label is either the formatted date or a
-/// muted placeholder, opening a Popover containing a Calendar. Cairn packages
-/// that same composition so it is one widget at the call site while still being
-/// built from [CairnCalendar] and the popover layer.
+/// A date picker is a composition rather than a primitive: an outline Button
+/// trigger whose label is either the formatted date or a muted placeholder,
+/// opening a Popover that holds a Calendar. Cairn ships it pre-assembled so it
+/// is one widget at the call site, while still being built from
+/// [CairnCalendar] and the popover layer — nothing here is a private
+/// re-implementation of either.
 ///
 /// [format] defaults to an unambiguous `D Month YYYY`. Applications with
 /// `intl` available should pass their own formatter rather than relying on it,

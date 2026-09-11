@@ -2,7 +2,7 @@ import 'package:flutter/widgets.dart';
 
 import '../../theme/cairn_theme.dart';
 
-/// A one-pixel rule matching shadcn/ui's `Separator`.
+/// A one-pixel rule.
 ///
 /// `shrink-0 bg-border`, `h-px w-full` when horizontal and `h-full w-px` when
 /// vertical.
@@ -11,8 +11,10 @@ import '../../theme/cairn_theme.dart';
 /// Flutter — so on a 3x device it rasterises to three physical pixels, exactly
 /// as a browser would on the same display.
 ///
-/// [decorative] mirrors Radix's prop of the same name: a decorative separator
-/// is hidden from assistive technology, while a semantic one is announced.
+/// [decorative] decides whether the rule is announced. Most separators are
+/// pure visual rhythm and should be hidden from assistive technology; one that
+/// genuinely divides two sections of content is a semantic boundary and is
+/// announced as such.
 ///
 /// ```dart
 /// const CairnSeparator();

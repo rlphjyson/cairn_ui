@@ -5,7 +5,7 @@ import '../../tokens/shadows.dart';
 import '../../tokens/spacing.dart';
 import '../../tokens/typography.dart';
 
-/// A content container matching shadcn/ui's `Card`.
+/// A content container with header, content and footer slots.
 ///
 /// `flex flex-col gap-6 rounded-xl border bg-card py-6 text-card-foreground
 /// shadow-sm` — a `rounded-xl` (14 logical pixel) radius, 24px of vertical

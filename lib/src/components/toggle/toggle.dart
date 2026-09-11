@@ -29,7 +29,7 @@ enum CairnToggleSize {
   lg,
 }
 
-/// A two-state button matching shadcn/ui's `Toggle`.
+/// A two-state button.
 ///
 /// `rounded-md text-sm font-medium hover:bg-muted hover:text-muted-foreground`,
 /// switching to `bg-accent text-accent-foreground` when on.

@@ -249,7 +249,7 @@ class _Sidebar extends StatelessWidget {
             ),
             const SizedBox(height: CairnSpacing.s2),
             Text(
-              'shadcn/ui, measured and rebuilt in Flutter.',
+              'A modern, accessible Flutter component library.',
               style: theme
                   .textStyle(CairnTypography.sm)
                   .copyWith(color: theme.mutedForeground),

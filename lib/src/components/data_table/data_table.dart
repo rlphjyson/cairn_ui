@@ -23,10 +23,10 @@ enum CairnSortDirection {
 
 /// A sortable, filterable, paginated table built on [CairnTable].
 ///
-/// shadcn/ui's Data Table is a *recipe* rather than a component — it wires
-/// TanStack Table to the Table primitives. Cairn takes the same approach:
-/// [CairnDataTable] adds behaviour on top of [CairnTable] rather than being a
-/// separate rendering path, so the two cannot drift visually.
+/// This is behaviour layered onto [CairnTable], not a second rendering path:
+/// sorting, filtering and pagination are added *above* the primitive rather
+/// than reimplemented alongside it, so a plain table and a data table can never
+/// drift apart visually.
 ///
 /// Sorting is opt-in per column, enabled by giving a [CairnColumn] a `sortKey`.
 /// Sortable headers become interactive and show a directional arrow.

@@ -9,12 +9,12 @@ import '../../tokens/spacing.dart';
 import '../../tokens/typography.dart';
 import '../button/button.dart';
 
-/// A month-grid date picker matching shadcn/ui's `Calendar`.
+/// A month-grid date picker.
 ///
-/// shadcn/ui wraps `react-day-picker` and restyles it: day cells are `size-8`
-/// (32 logical pixels) ghost buttons, the selected day is `bg-primary
-/// text-primary-foreground`, today is `bg-accent text-accent-foreground`, and
-/// days outside the current month are `text-muted-foreground opacity-50`.
+/// Day cells are 32 logical pixel (`size-8`) ghost buttons. The selected day
+/// takes the primary fill, today takes the accent fill, and days spilling in
+/// from the neighbouring months are muted to 50% opacity so the current month
+/// still reads as a single block.
 ///
 /// The grid is a fixed 7 x 6 so the calendar's height never changes as months
 /// with different day counts are paged through — a jumping popover is one of

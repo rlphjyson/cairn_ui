@@ -45,19 +45,20 @@ class CairnSelectOption<T> {
   final bool enabled;
 }
 
-/// A dropdown value picker matching shadcn/ui's `Select`.
+/// A dropdown value picker.
 ///
 /// The trigger is `flex w-fit items-center justify-between gap-2 rounded-md
 /// border border-input bg-transparent px-3 py-2 text-sm shadow-xs` at `h-9`,
 /// with a `size-4 opacity-50` chevron.
 ///
 /// The menu is `min-w-[8rem] rounded-md border bg-popover p-1 shadow-md`, and
-/// is at least as wide as its trigger — shadcn/ui expresses that with
-/// `min-w-[var(--radix-select-trigger-width)]`, which Cairn reproduces through
-/// [CairnPopoverLayout]'s `matchAnchorWidth`.
+/// is always at least as wide as its trigger — a menu narrower than the control
+/// that opened it reads as a misplaced tooltip. That is [CairnPopoverLayout]'s
+/// `matchAnchorWidth`.
 ///
-/// The placeholder renders in `--muted-foreground` (`data-[placeholder]`), and
-/// the selected row carries a trailing check at `size-3.5`.
+/// The placeholder renders in the muted foreground so an unset field is
+/// distinguishable from a chosen value at a glance, and the selected row
+/// carries a trailing check at `size-3.5`.
 ///
 /// ```dart
 /// CairnSelect<String>(

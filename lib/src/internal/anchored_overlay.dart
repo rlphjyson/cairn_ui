@@ -12,15 +12,14 @@ import 'popover_layer.dart';
 ///
 /// * **Positioning** via [CairnPopoverLayout], including flip and shift.
 /// * **Dismissal** — Escape closes, and a tap outside closes when
-///   [dismissOnOutsideTap] is set. Radix calls these `onEscapeKeyDown` and
-///   `onPointerDownOutside`.
-/// * **Entrance animation** — shadcn/ui's `data-[state=open]:animate-in
-///   fade-in-0 zoom-in-95` is a 200ms fade from 0 combined with a scale from
+///   [dismissOnOutsideTap] is set.
+/// * **Entrance animation** — a 200ms fade from 0 combined with a scale from
 ///   0.95, with the transform origin on the anchor's edge so the surface
-///   appears to grow out of its trigger.
+///   appears to grow out of its trigger rather than materialise beside it.
 /// * **Focus** — when [trapFocus] is true the surface takes focus on open and
-///   restores it to the trigger on close, matching Radix's focus management for
-///   menus. Tooltips and hover cards leave focus alone.
+///   restores it to the trigger on close, so a keyboard user is never dropped
+///   back at the top of the page. Tooltips and hover cards leave focus
+///   alone.
 ///
 /// Uses [OverlayPortal] rather than pushing a route, so the surface does not
 /// appear in the navigation stack and a system back gesture does not have to
@@ -52,13 +51,13 @@ class CairnAnchoredOverlay extends StatefulWidget {
   /// Builds the floating surface.
   final WidgetBuilder overlayBuilder;
 
-  /// The preferred side (Radix's `side`).
+  /// The preferred side to open on, before flipping.
   final CairnSide side;
 
-  /// The cross-axis alignment (Radix's `align`).
+  /// The cross-axis alignment against the anchor.
   final CairnAlign align;
 
-  /// The gap between anchor and surface (Radix's `sideOffset`, default 4).
+  /// The gap between anchor and surface, in logical pixels.
   final double offset;
 
   /// Minimum distance from the viewport edge.

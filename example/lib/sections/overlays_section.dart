@@ -122,7 +122,7 @@ class _OverlaysState extends State<_Overlays> {
                   children: <Widget>[
                     CairnAvatar(fallback: Text('CA')),
                     Text('Cairn UI'),
-                    Text('A Flutter port of shadcn/ui measurements.'),
+                    Text('A Flutter library with real design tokens.'),
                   ],
                 ),
                 child: CairnButton(
@@ -138,7 +138,7 @@ class _OverlaysState extends State<_Overlays> {
           title: 'Dropdown Menu and Context Menu',
           note:
               'Menu panels are p-1 with min-w-[8rem]. Menu items use '
-              'cursor-default, not a pointer, matching Radix.',
+              'cursor-default, not a pointer, the way a native menu does.',
           child: DemoRow(
             children: <Widget>[
               CairnDropdownMenu(
@@ -199,8 +199,8 @@ class _OverlaysState extends State<_Overlays> {
         Demo(
           title: 'Select and Combobox',
           note:
-              'The menu is at least as wide as its trigger, reproducing '
-              'min-w-[var(--radix-select-trigger-width)].',
+              'The menu is always at least as wide as its trigger, so it '
+              'never reads as a misplaced tooltip.',
           child: DemoRow(
             children: <Widget>[
               CairnSelect<String>(

@@ -15,16 +15,16 @@ enum CairnAvatarSize {
   lg,
 }
 
-/// A user avatar matching shadcn/ui's `Avatar`.
+/// A user avatar with an image and a text fallback.
 ///
 /// `relative flex size-8 shrink-0 overflow-hidden rounded-full select-none`,
 /// with a `bg-muted text-sm text-muted-foreground` fallback.
 ///
-/// Radix's Avatar shows [fallback] until the image has actually loaded and
-/// swaps to the image only on success — so a broken URL leaves the initials in
-/// place rather than showing a broken-image box. Cairn reproduces that with
-/// [Image.errorBuilder] and [Image.frameBuilder] instead of just stacking the
-/// image on top of the fallback.
+/// [fallback] stays visible until the image has actually loaded, and the swap
+/// happens only on success — so a broken URL leaves the initials in place
+/// rather than collapsing to a broken-image box, and a slow one never flashes
+/// an empty circle. That is why the image runs through [Image.errorBuilder] and
+/// [Image.frameBuilder] instead of simply being stacked over the fallback.
 ///
 /// ```dart
 /// CairnAvatar(
@@ -116,7 +116,7 @@ class CairnAvatar extends StatelessWidget {
   }
 }
 
-/// A row of overlapping avatars matching shadcn/ui's `AvatarGroup`.
+/// A row of overlapping avatars.
 ///
 /// `flex -space-x-2 *:ring-2 *:ring-background` — each avatar overlaps the
 /// previous by 8 logical pixels and carries a 2px ring in the page background

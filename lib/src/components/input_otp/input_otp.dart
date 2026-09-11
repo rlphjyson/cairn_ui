@@ -8,7 +8,7 @@ import '../../tokens/shadows.dart';
 import '../../tokens/spacing.dart';
 import '../../tokens/typography.dart';
 
-/// A one-time-code field matching shadcn/ui's `InputOTP`.
+/// A one-time-code field.
 ///
 /// Each slot is `h-9 w-9 border-y border-r border-input text-sm shadow-xs`,
 /// with `first:rounded-l-md first:border-l last:rounded-r-md` — so the group

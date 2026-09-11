@@ -5,7 +5,7 @@ import 'package:flutter/widgets.dart';
 import '../../theme/cairn_theme.dart';
 import '../../tokens/motion.dart';
 
-/// A loading spinner matching shadcn/ui's `Spinner`.
+/// A loading spinner.
 ///
 /// `size-4 animate-spin` — a 16 logical pixel arc rotating once per second at
 /// a linear rate, matching Tailwind's `animate-spin` keyframes exactly (a

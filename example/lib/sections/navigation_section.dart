@@ -88,8 +88,8 @@ class _NavigationState extends State<_Navigation> {
                       value: 'b',
                       title: Text('Is it styled?'),
                       content: Text(
-                        'Yes, to shadcn/ui measurements, down to the 2px '
-                        'chevron nudge.',
+                        'Yes. It comes styled by default, down to the '
+                        '2px chevron nudge.',
                       ),
                     ),
                     CairnAccordionItem(
@@ -235,8 +235,8 @@ class _NavigationState extends State<_Navigation> {
                                 .copyWith(fontWeight: CairnTypography.medium),
                           ),
                           Text(
-                            'Re-usable components built to shadcn/ui\'s '
-                            'exact measurements.',
+                            'Re-usable components on a rigorous token '
+                            'system.',
                             style: theme
                                 .textStyle(CairnTypography.sm)
                                 .copyWith(color: theme.mutedForeground),

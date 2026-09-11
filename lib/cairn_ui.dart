@@ -1,4 +1,4 @@
-/// Cairn UI — a Flutter component library built to shadcn/ui's measurements.
+/// Cairn UI — a modern, accessible Flutter component library.
 ///
 /// Import this single barrel to get every component, token and theme type:
 ///
@@ -6,7 +6,7 @@
 /// import 'package:cairn_ui/cairn_ui.dart';
 /// ```
 ///
-/// See `README.md` for the theming setup and the pixel-accuracy methodology.
+/// See `README.md` for the theming setup and the design token system.
 library;
 
 export 'src/components/accordion/accordion.dart';

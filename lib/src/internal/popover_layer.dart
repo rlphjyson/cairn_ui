@@ -2,7 +2,8 @@ import 'package:flutter/widgets.dart';
 
 /// Which edge of the anchor a floating surface prefers to sit on.
 ///
-/// Mirrors Radix's `side` prop.
+/// A preference, not a guarantee: [CairnPopoverLayout] flips to the opposite
+/// edge when the preferred one would overflow the viewport.
 enum CairnSide {
   /// Above the anchor.
   top,
@@ -29,8 +30,6 @@ enum CairnSide {
 }
 
 /// How a floating surface lines up along the anchor's cross axis.
-///
-/// Mirrors Radix's `align` prop.
 enum CairnAlign {
   /// Flush with the anchor's leading edge.
   start,
@@ -44,17 +43,15 @@ enum CairnAlign {
 
 /// Positions a floating surface relative to an anchor rectangle.
 ///
-/// This is the layout half of Cairn's popover system and reproduces the parts
-/// of Floating UI (which Radix uses under the hood) that actually affect
-/// appearance:
+/// This is the layout half of Cairn's popover system. Three behaviours between
+/// them cover essentially every case a floating surface runs into:
 ///
 /// * **flip** — if the preferred [side] would overflow the viewport, the
 ///   surface moves to the opposite side rather than being clipped.
 /// * **shift** — along the cross axis the surface is nudged back inside the
 ///   viewport instead of hanging off the edge.
-/// * **offset** — a gap between anchor and surface, matching the
-///   `sideOffset` prop (Radix defaults to 4, and shadcn/ui passes 4 for
-///   Popover, Dropdown Menu and Tooltip).
+/// * **offset** — a 4px gap between anchor and surface, enough to read as a
+///   separate layer without drifting away from what opened it.
 ///
 /// Sizes larger than the viewport are clamped rather than overflowing, which is
 /// what keeps a long Select menu usable on a short window.
@@ -78,14 +75,16 @@ class CairnPopoverLayout extends SingleChildLayoutDelegate {
   /// The cross-axis alignment.
   final CairnAlign align;
 
-  /// The gap between anchor and surface (`sideOffset`).
+  /// The gap between anchor and surface.
   final double offset;
 
   /// Minimum distance to keep from the viewport edges.
   final double viewportPadding;
 
-  /// Whether the surface should be at least as wide as the anchor, which
-  /// Select uses via `min-w-[var(--radix-select-trigger-width)]`.
+  /// Whether the surface should be at least as wide as the anchor.
+  ///
+  /// Select sets this so its menu lines up with its trigger: a menu narrower
+  /// than the control that opened it reads as a misplaced tooltip.
   final bool matchAnchorWidth;
 
   @override

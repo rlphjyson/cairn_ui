@@ -2,15 +2,15 @@ import 'package:flutter/widgets.dart';
 
 /// The glyphs Cairn draws internally.
 ///
-/// shadcn/ui uses `lucide-react` for every icon inside a component (the check
-/// in a Checkbox, the chevron in a Select trigger, the X on a Dialog). Cairn
-/// redraws the handful it needs rather than taking a dependency or bundling an
-/// icon font, so the package stays pure Dart with no assets.
+/// A few components need a glyph of their own — the check in a Checkbox, the
+/// chevron in a Select trigger, the X on a Dialog. Cairn draws those with a
+/// [CustomPainter] rather than taking an icon-package dependency or bundling an
+/// icon font, so the package stays pure Dart with no assets and nothing for a
+/// consumer to register.
 ///
-/// Geometry follows Lucide's own source: a 24x24 view box, 2px stroke, round
-/// caps and round joins. [CairnIcon] scales that to the requested size, so a
-/// 16px icon (shadcn/ui's `size-4` default) draws a 1.33px stroke exactly as
-/// the browser would.
+/// Geometry follows Lucide's: a 24x24 view box, 2px stroke, round caps and
+/// round joins. [CairnIcon] scales that to the requested size, so the default
+/// 16px icon draws a proportional 1.33px stroke.
 enum CairnIconData {
   /// Lucide `check` — the Checkbox indicator and selected menu items.
   check,
@@ -69,9 +69,10 @@ enum CairnIconData {
 
 /// Draws one of Cairn's built-in [CairnIconData] glyphs.
 ///
-/// Defaults to 16 logical pixels (shadcn/ui's `size-4`) and inherits its colour
-/// from the ambient [IconTheme] when [color] is null, so it behaves like a
-/// normal Flutter [Icon] inside buttons and menu items.
+/// Defaults to 16 logical pixels — the size that sits correctly beside 14px
+/// body text — and inherits its colour from the ambient [IconTheme] when
+/// [color] is null, so it behaves like a normal Flutter [Icon] inside buttons
+/// and menu items.
 class CairnIcon extends StatelessWidget {
   /// Creates an icon.
   const CairnIcon(this.icon, {super.key, this.size = 16.0, this.color});

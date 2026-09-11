@@ -5,7 +5,7 @@ import '../../theme/cairn_theme.dart';
 import '../../tokens/spacing.dart';
 import '../button/button.dart';
 
-/// A page navigator matching shadcn/ui's `Pagination`.
+/// A page navigator.
 ///
 /// `flex flex-row items-center gap-1` — page links reuse the Button styles:
 /// the current page is the `outline` variant and the rest are `ghost`, all at

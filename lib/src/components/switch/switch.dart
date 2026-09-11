@@ -15,13 +15,13 @@ enum CairnSwitchSize {
   md,
 }
 
-/// A switch matching shadcn/ui's `Switch`.
+/// A switch.
 ///
-/// The default track is `h-[1.15rem] w-8` — an arbitrary-value height of
-/// **18.4 logical pixels**, not a round number. That oddity is real: shadcn/ui
-/// writes `1.15rem` literally, sizing the track so a 16px thumb clears the 1px
-/// transparent border with a hair of room. Rounding it to 18 or 20 is the kind
-/// of drift this library exists to avoid.
+/// The default track is `h-[1.15rem] w-8` — **18.4 logical pixels** tall, not
+/// a round number, and deliberately so. The height is derived rather than
+/// chosen: a 16px thumb has to clear the 1px transparent border on both sides
+/// with a hair of room, and 18.4 is where that lands. Rounding it to 18 pinches
+/// the thumb; rounding it to 20 leaves it swimming.
 ///
 /// The thumb travels `translate-x-[calc(100%-2px)]` when checked — its own
 /// width minus 2px, so 14 logical pixels at the default size.

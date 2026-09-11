@@ -62,7 +62,7 @@ void main() {
       expect(
         find.text('Escapable'),
         findsNothing,
-        reason: 'Radix dismisses on Escape',
+        reason: 'Escape dismisses an open dialog',
       );
     });
 

@@ -19,19 +19,18 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## 0.1.0
 
-First release. 45 components built to shadcn/ui's measurements, with a token
-layer extracted from shadcn/ui's live registry and golden tests enforcing
-appearance.
+First release. 45 components on an engineered design token layer, with golden
+tests enforcing appearance in both themes.
 
 ### Added
 
 **Tokens** (`lib/src/tokens/`)
 
-- OKLCH to sRGB conversion, since shadcn/ui's default theme is authored in
-  `oklch()`. Values round-trip exactly onto Tailwind's published `neutral`
-  ramp.
-- Tailwind's spacing scale (`--spacing: 0.25rem`), radius scale (the current
-  multiplier formula), type scale (rem line heights as Flutter `height`
+- OKLCH to sRGB conversion, since the palette is authored in `oklch()` for
+  perceptual uniformity. Values round-trip exactly onto Tailwind's published
+  `neutral` ramp.
+- A 4 logical pixel spacing scale, a proportional radius scale (every step a
+  multiple of one base), a type scale (rem line heights as Flutter `height`
   multiples), motion curves and the box-shadow scale.
 - Shadow conversion that inverts Flutter's `radius -> sigma` formula, so a CSS
   blur renders at the Gaussian sigma a browser would produce.
@@ -42,8 +41,9 @@ appearance.
   radius and font family, with `light` and `dark` presets.
 - `CairnTheme.materialTheme()`, which builds a `ThemeData` whose Material
   defaults agree with the Cairn tokens.
-- `withOpacityModifier`, reproducing Tailwind's `/N` opacity modifier, which
-  scales a colour's existing alpha rather than replacing it.
+- `withOpacityModifier`, which scales a colour's existing alpha rather than
+  replacing it, so a partial-strength token means a fraction of what the token
+  already is.
 
 **Components** — Accordion, Alert, Alert Dialog, Aspect Ratio, Avatar, Avatar
 Group, Badge, Breadcrumb, Button, Calendar, Card, Carousel, Checkbox,

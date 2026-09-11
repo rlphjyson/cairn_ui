@@ -5,8 +5,7 @@ import '../../internal/popover_layer.dart';
 import '../../tokens/motion.dart';
 import '../menu/menu.dart';
 
-/// A menu opened by right-click or long-press, matching shadcn/ui's
-/// `ContextMenu`.
+/// A menu opened by right-click or long-press.
 ///
 /// Unlike a Dropdown Menu, a context menu is anchored to the **pointer**, not
 /// to a widget — so the layout anchor is a zero-size rect at the click point.

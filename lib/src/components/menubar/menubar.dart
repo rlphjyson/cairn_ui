@@ -30,7 +30,7 @@ class CairnMenubarMenu {
   final bool enabled;
 }
 
-/// A desktop-style menu bar matching shadcn/ui's `Menubar`.
+/// A desktop-style menu bar.
 ///
 /// The bar is `flex h-9 items-center gap-1 rounded-md border bg-background p-1
 /// shadow-xs`; triggers are `rounded-sm px-2 py-1 text-sm font-medium` and
@@ -40,9 +40,11 @@ class CairnMenubarMenu {
 /// ## The hover-to-switch behaviour
 ///
 /// Once any menu in the bar is open, hovering a sibling trigger switches to it
-/// without a click — the behaviour every native menu bar has. Radix implements
-/// this by sharing open state across the bar, and Cairn does the same via a
-/// single active-index in the parent rather than per-menu controllers.
+/// without a click — the behaviour every native menu bar has. That requires
+/// the open state to live in the *bar*, not in each menu, so Cairn keeps a
+/// single active index in the parent rather than one controller per menu.
+/// Per-menu state would make "close that one and open this one" a coordination
+/// problem with a visible flicker in the middle of it.
 ///
 /// ```dart
 /// CairnMenubar(
@@ -186,7 +188,7 @@ class _CairnMenubarState extends State<CairnMenubar> {
   }
 }
 
-/// A horizontal navigation bar matching shadcn/ui's `NavigationMenu`.
+/// A horizontal navigation bar.
 ///
 /// Triggers are `h-9 w-max rounded-md bg-background px-4 py-2 text-sm
 /// font-medium` with `hover:bg-accent`, and the open state is

@@ -84,7 +84,7 @@ class CairnSurface extends StatelessWidget {
   }
 }
 
-/// A floating panel anchored to a trigger, matching shadcn/ui's `Popover`.
+/// A floating panel anchored to a trigger.
 ///
 /// The content is `w-72` (288 logical pixels) with `p-4` padding, `rounded-md`,
 /// a 1px border and `shadow-md`, offset 4px from the trigger.

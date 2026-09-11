@@ -41,7 +41,7 @@ class CairnTab<T> {
   final bool enabled;
 }
 
-/// A tab bar matching shadcn/ui's `Tabs`.
+/// A tab bar, in a filled or an underlined variant.
 ///
 /// The filled variant's track is `h-9 rounded-lg bg-muted p-[3px]` — note the
 /// **3px** padding, an arbitrary value rather than a spacing step, which is
@@ -55,8 +55,9 @@ class CairnTab<T> {
 ///
 /// ## Accessibility
 ///
-/// Arrow keys move between tabs and the bar holds a single tab stop, matching
-/// the WAI-ARIA tabs pattern that Radix implements.
+/// Arrow keys move between tabs and the bar holds a single tab stop, which is
+/// the WAI-ARIA tabs pattern: Tab reaches the tab bar, then the panel, rather
+/// than stepping through every tab on the way past.
 ///
 /// ```dart
 /// CairnTabs<String>(

@@ -4,15 +4,16 @@ import '../../theme/cairn_theme.dart';
 import '../../tokens/spacing.dart';
 import '../../tokens/typography.dart';
 
-/// A keyboard shortcut chip matching shadcn/ui's `Kbd`.
+/// A keyboard shortcut chip.
 ///
 /// `pointer-events-none inline-flex h-5 w-fit min-w-5 items-center justify-center
 /// gap-1 rounded-sm bg-muted px-1 font-sans text-xs font-medium
 /// text-muted-foreground select-none` — a 20 logical pixel tall chip with a
 /// `min-w-5` so a single character still renders square.
 ///
-/// Note `font-sans`: shadcn/ui deliberately does *not* use a monospace face
-/// here, despite this being a `<kbd>` element.
+/// Note the face is the ambient sans, deliberately **not** a monospace one.
+/// A key chip is a label, not code, and monospace digits next to sans-serif
+/// body text read as a mistake at this size.
 ///
 /// ```dart
 /// const CairnKbdGroup(keys: ['Ctrl', 'K']);

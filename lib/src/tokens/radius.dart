@@ -1,86 +1,77 @@
 import 'package:flutter/widgets.dart';
 
-/// shadcn/ui's border-radius scale, expressed in Flutter logical pixels.
+/// Cairn's border-radius scale, expressed in Flutter logical pixels.
 ///
-/// shadcn/ui derives its whole radius scale from one CSS variable, `--radius`,
-/// which defaults to `0.625rem` (10px). Tailwind's `rounded-*` utilities are
-/// then remapped in the generated `@theme inline` block.
+/// The entire scale derives from a single base value, [base], which defaults to
+/// 10 logical pixels. Every step is a fixed **multiple** of that base:
 ///
-/// **This formula changed between shadcn/ui versions and is a common source of
-/// stale values.** The older (Tailwind v3 era) theme used pixel offsets:
-///
-/// ```css
-/// --radius-sm: calc(var(--radius) - 4px);
-/// --radius-md: calc(var(--radius) - 2px);
-/// --radius-lg: var(--radius);
-/// --radius-xl: calc(var(--radius) + 4px);
+/// ```text
+/// xs  = 2 (fixed)
+/// sm  = base * 0.6   ->  6
+/// md  = base * 0.8   ->  8
+/// lg  = base         -> 10
+/// xl  = base * 1.4   -> 14
+/// 2xl = base * 1.8   -> 18
+/// 3xl = base * 2.2   -> 22
+/// 4xl = base * 2.6   -> 26
 /// ```
 ///
-/// The current CLI (`packages/shadcn/src/utils/updaters/update-css-vars.ts`)
-/// writes **multipliers** instead:
-///
-/// ```css
-/// --radius-sm:  calc(var(--radius) * 0.6);
-/// --radius-md:  calc(var(--radius) * 0.8);
-/// --radius-lg:  var(--radius);
-/// --radius-xl:  calc(var(--radius) * 1.4);
-/// --radius-2xl: calc(var(--radius) * 1.8);
-/// --radius-3xl: calc(var(--radius) * 2.2);
-/// --radius-4xl: calc(var(--radius) * 2.6);
-/// ```
-///
-/// At the default `--radius: 0.625rem` the two formulations happen to agree
-/// exactly (6 / 8 / 10 / 14px) — the multipliers were chosen to preserve the
-/// familiar defaults. They only diverge once `--radius` is customised, which is
-/// why [CairnRadius.scaled] reproduces the multiplier form rather than baking
-/// in the constants.
+/// Multipliers rather than offsets is a deliberate choice. The obvious
+/// alternative — fixed pixel offsets from the base (`base - 4`, `base - 2`,
+/// `base + 4`) — produces identical numbers at the default base, but falls
+/// apart the moment the base is retuned: a compact 4px theme would give a
+/// *negative* small radius, and a generous 24px theme would compress the whole
+/// scale into a narrow band. A proportional scale holds its shape at any base,
+/// so changing `CairnTheme.radius` rescales every corner in the library
+/// coherently instead of requiring a per-component audit. [CairnRadius.scaled]
+/// is that computation.
 abstract final class CairnRadius {
-  /// The base `--radius` value: `0.625rem` = 10 logical pixels.
+  /// The base radius: 10 logical pixels.
   static const double base = 10.0;
 
-  /// `rounded-none` — 0px.
+  /// No rounding — 0px.
   static const double none = 0.0;
 
-  /// `rounded-xs` — 2px. A fixed Tailwind value, not derived from `--radius`.
+  /// 2px. A fixed step rather than a multiple of [base].
   ///
-  /// Used by the close-button affordance in Dialog and Sheet (`rounded-xs`).
+  /// Used by the close-button affordance in Dialog and Sheet, where the target
+  /// is small enough that a proportional radius would read as a circle.
   static const double xs = 2.0;
 
-  /// `rounded-sm` — `--radius * 0.6` = 6px.
+  /// `base * 0.6` = 6px.
   static const double sm = 6.0;
 
-  /// `rounded-md` — `--radius * 0.8` = 8px.
+  /// `base * 0.8` = 8px.
   ///
   /// The most common radius in the library: Button, Input, Textarea, Select
   /// trigger, Popover and Dropdown content all use it.
   static const double md = 8.0;
 
-  /// `rounded-lg` — `--radius` = 10px. Used by Dialog, Alert and Tabs list.
+  /// `base` = 10px. Used by Dialog, Alert and Tabs list.
   static const double lg = 10.0;
 
-  /// `rounded-xl` — `--radius * 1.4` = 14px. Used by Card.
+  /// `base * 1.4` = 14px. Used by Card.
   static const double xl = 14.0;
 
-  /// `rounded-2xl` — `--radius * 1.8` = 18px.
+  /// `base * 1.8` = 18px.
   static const double xl2 = 18.0;
 
-  /// `rounded-3xl` — `--radius * 2.2` = 22px.
+  /// `base * 2.2` = 22px.
   static const double xl3 = 22.0;
 
-  /// `rounded-4xl` — `--radius * 2.6` = 26px.
+  /// `base * 2.6` = 26px.
   static const double xl4 = 26.0;
 
-  /// `rounded-full` — a very large radius that reads as a pill/circle.
+  /// A very large radius that reads as a pill or circle.
   ///
   /// CSS uses `9999px`; Flutter clamps a [BorderRadius] to half the shorter
   /// side, so any sufficiently large number behaves identically.
   static const double full = 9999.0;
 
-  /// Recomputes the scale for a custom `--radius` value, using shadcn/ui's
-  /// current multiplier formula.
+  /// Recomputes the whole scale for a custom base radius.
   ///
   /// ```dart
-  /// // A tighter theme built on --radius: 0.375rem (6px).
+  /// // A tighter theme built on a 6px base.
   /// CairnRadius.scaled(6).md; // 4.8
   /// ```
   static CairnRadiusScale scaled(double radius) => CairnRadiusScale(radius);
@@ -101,37 +92,38 @@ abstract final class CairnRadius {
   static const BorderRadius brFull = BorderRadius.all(Radius.circular(full));
 }
 
-/// A radius scale derived from a custom `--radius` base.
+/// A radius scale derived from a custom base radius.
 ///
-/// Produced by [CairnRadius.scaled]. Mirrors shadcn/ui's multiplier formula so
-/// a themed app keeps proportional radii across every component.
+/// Produced by [CairnRadius.scaled]. Applies the same multipliers as the
+/// default scale, so a retuned theme keeps proportional radii across every
+/// component.
 @immutable
 class CairnRadiusScale {
-  /// Creates a scale from a `--radius` value in logical pixels.
+  /// Creates a scale from a base radius in logical pixels.
   const CairnRadiusScale(this.base);
 
-  /// The `--radius` base, in logical pixels.
+  /// The base radius, in logical pixels.
   final double base;
 
-  /// `calc(var(--radius) * 0.6)`.
+  /// `base * 0.6`.
   double get sm => base * 0.6;
 
-  /// `calc(var(--radius) * 0.8)`.
+  /// `base * 0.8`.
   double get md => base * 0.8;
 
-  /// `var(--radius)`.
+  /// `base`.
   double get lg => base;
 
-  /// `calc(var(--radius) * 1.4)`.
+  /// `base * 1.4`.
   double get xl => base * 1.4;
 
-  /// `calc(var(--radius) * 1.8)`.
+  /// `base * 1.8`.
   double get xl2 => base * 1.8;
 
-  /// `calc(var(--radius) * 2.2)`.
+  /// `base * 2.2`.
   double get xl3 => base * 2.2;
 
-  /// `calc(var(--radius) * 2.6)`.
+  /// `base * 2.6`.
   double get xl4 => base * 2.6;
 
   @override

@@ -27,15 +27,16 @@ enum CairnSheetSide {
       this == CairnSheetSide.left || this == CairnSheetSide.right;
 }
 
-/// Shows an edge-anchored panel matching shadcn/ui's `Sheet`.
+/// Shows an edge-anchored panel.
 ///
 /// Side sheets are `w-3/4 sm:max-w-sm` — three quarters of the viewport, capped
 /// at 384 logical pixels — with a `shadow-lg` and a border on the inner edge.
 ///
-/// The animation is **asymmetric**, which is easy to miss: shadcn/ui specifies
-/// `data-[state=open]:duration-500` and `data-[state=closed]:duration-300`, so
-/// a sheet opens noticeably slower than it closes. That is reproduced here via
-/// the route's separate forward and reverse durations.
+/// The animation is deliberately **asymmetric**: 500ms to open and 300ms to
+/// close. A panel travelling most of the screen's width needs the slower
+/// entrance to stay legible as motion rather than a jump cut, but on the way
+/// out the user has already decided and any extra time is just waiting. The
+/// route's separate forward and reverse durations carry that.
 ///
 /// ```dart
 /// await showCairnSheet<void>(
@@ -321,12 +322,12 @@ class _SheetClose extends StatelessWidget {
   );
 }
 
-/// A bottom sheet with a drag handle, matching shadcn/ui's `Drawer`.
+/// A bottom sheet with a drag handle.
 ///
-/// shadcn/ui's Drawer wraps Vaul, which is a bottom-anchored sheet with a grab
-/// handle and drag-to-dismiss. Cairn implements it as a [CairnSheet] pinned to
-/// the bottom edge plus the handle and drag gesture, rather than as a separate
-/// system.
+/// A drawer is a [CairnSheet] pinned to the bottom edge plus a grab handle and
+/// a drag-to-dismiss gesture, not a separate system. Building it on the sheet
+/// means the two share their scrim, their focus handling and their dismissal
+/// semantics, and cannot drift apart.
 class CairnDrawer extends StatelessWidget {
   /// Creates a drawer panel.
   const CairnDrawer({

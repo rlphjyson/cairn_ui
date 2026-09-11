@@ -19,21 +19,24 @@ import 'package:flutter/widgets.dart';
 /// Baking the ratio rather than the pixel value is what keeps a component's
 /// intrinsic height correct when a user scales text.
 ///
-/// ## `leading-none`
+/// ## Tight leading
 ///
-/// Several shadcn/ui components (Card title, Dialog title, Label) use
-/// `leading-none`, which is `line-height: 1`. Flutter's default when [height]
-/// is null is *not* 1 — it is the font's own metric ascent+descent, typically
-/// ~1.2 — so these must set `height: 1.0` explicitly or titles sit lower than
-/// the reference. [leadingNone] exists for exactly that case.
+/// A few places in the library — Card title, Dialog title, Label — want a line
+/// height of exactly 1, so that a single-line heading occupies precisely its
+/// own font size and sits optically centred against the controls beside it.
+/// Flutter's default when [height] is null is *not* 1: it is the font's own
+/// metric ascent+descent, typically ~1.2, which drops the glyphs low in their
+/// box. [leadingNone] exists for exactly that case and has to be set
+/// explicitly.
 ///
 /// ## Font family
 ///
-/// shadcn/ui's own site ships Geist; the components themselves only ever say
-/// `font-sans`, inheriting whatever the host app sets. Cairn matches that
-/// behaviour: [CairnTypography] leaves [TextStyle.fontFamily] null so the
-/// ambient font applies, and the golden tests pin a bundled font so rendering
-/// is deterministic. See `README.md` for the golden-font setup.
+/// Cairn never names a typeface. [CairnTypography] leaves
+/// [TextStyle.fontFamily] null so the ambient font the host app configures
+/// applies throughout, which is what lets Cairn drop into an existing app
+/// without fighting its brand. The golden tests pin a bundled font instead, so
+/// rendering stays deterministic in CI. See `README.md` for the golden-font
+/// setup.
 abstract final class CairnTypography {
   /// `text-xs` — 0.75rem / 1rem (12px on a 16px line).
   ///
