@@ -7,6 +7,13 @@ Flutter and held in place by golden tests.
 
 45 components. No runtime dependencies beyond Flutter itself.
 
+**Documentation site: <https://rlphjyson.github.io/cairn_site/>** — every
+component live and interactive, plus composed blocks, charts and a typography
+style guide. It is a Flutter web app
+([source](https://github.com/rlphjyson/cairn_site)) built *with* this library:
+its navigation, tabs, command palette, code-block toasts and directory table
+are all Cairn widgets doing a real job.
+
 ![The Cairn catalogue, Forms section](https://raw.githubusercontent.com/rlphjyson/cairn_ui/main/doc/images/catalog-forms.png)
 
 <details>
