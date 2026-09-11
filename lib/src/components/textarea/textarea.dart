@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../../internal/outer_shadow.dart';
 import '../../theme/cairn_theme.dart';
 import '../../tokens/motion.dart';
 import '../../tokens/shadows.dart';
@@ -127,53 +128,59 @@ class _CairnTextareaState extends State<CairnTextarea> {
         .textStyle(CairnTypography.sm)
         .copyWith(color: theme.foreground);
 
+    final BorderRadius radius = BorderRadius.circular(theme.radiusScale.md);
+
     return Semantics(
       label: widget.semanticLabel,
       child: Opacity(
         opacity: widget.enabled ? 1.0 : 0.5,
-        child: AnimatedContainer(
-          duration: CairnMotion.d150,
-          curve: CairnMotion.standard,
-          constraints: const BoxConstraints(minHeight: 64.0),
-          padding: const EdgeInsets.symmetric(
-            horizontal: CairnSpacing.s3,
-            vertical: CairnSpacing.s2,
-          ),
-          decoration: BoxDecoration(
-            color: isDark
-                ? theme.input.withValues(alpha: 0.3)
-                : const Color(0x00000000),
-            borderRadius: BorderRadius.circular(theme.radiusScale.md),
-            border: Border.all(color: borderColor),
-            boxShadow: <BoxShadow>[
-              ...CairnShadows.xs,
-              if (_focused)
-                ...(widget.hasError ? theme.invalidRing : theme.focusRing),
-            ],
-          ),
-          // See CairnInput: Material's TextField requires a Material ancestor,
-          // which the library supplies itself rather than requiring of hosts.
-          child: Material(
-            type: MaterialType.transparency,
-            child: TextField(
-              controller: widget.controller,
-              focusNode: _node,
-              enabled: widget.enabled,
-              readOnly: widget.readOnly,
-              autofocus: widget.autofocus,
-              minLines: widget.minLines,
-              maxLines: widget.autoGrow ? null : (widget.maxLines ?? 4),
-              maxLength: widget.maxLength,
-              inputFormatters: widget.inputFormatters,
-              onChanged: widget.onChanged,
-              keyboardType: TextInputType.multiline,
-              style: textStyle,
-              cursorColor: theme.foreground,
-              cursorWidth: 1.0,
-              decoration: InputDecoration.collapsed(
-                hintText: widget.placeholder,
-                hintStyle: textStyle.copyWith(color: theme.mutedForeground),
-              ).copyWith(counterText: '', isDense: true),
+        // `bg-transparent` in light mode, so shadows must not bleed through.
+        child: CairnShadowed(
+          borderRadius: radius,
+          shadows: <BoxShadow>[
+            ...CairnShadows.xs,
+            if (_focused)
+              ...(widget.hasError ? theme.invalidRing : theme.focusRing),
+          ],
+          child: AnimatedContainer(
+            duration: CairnMotion.d150,
+            curve: CairnMotion.standard,
+            constraints: const BoxConstraints(minHeight: 64.0),
+            padding: const EdgeInsets.symmetric(
+              horizontal: CairnSpacing.s3,
+              vertical: CairnSpacing.s2,
+            ),
+            decoration: BoxDecoration(
+              color: isDark
+                  ? theme.input.withValues(alpha: 0.3)
+                  : const Color(0x00000000),
+              borderRadius: radius,
+              border: Border.all(color: borderColor),
+            ),
+            // See CairnInput: Material's TextField requires a Material ancestor,
+            // which the library supplies itself rather than requiring of hosts.
+            child: Material(
+              type: MaterialType.transparency,
+              child: TextField(
+                controller: widget.controller,
+                focusNode: _node,
+                enabled: widget.enabled,
+                readOnly: widget.readOnly,
+                autofocus: widget.autofocus,
+                minLines: widget.minLines,
+                maxLines: widget.autoGrow ? null : (widget.maxLines ?? 4),
+                maxLength: widget.maxLength,
+                inputFormatters: widget.inputFormatters,
+                onChanged: widget.onChanged,
+                keyboardType: TextInputType.multiline,
+                style: textStyle,
+                cursorColor: theme.foreground,
+                cursorWidth: 1.0,
+                decoration: InputDecoration.collapsed(
+                  hintText: widget.placeholder,
+                  hintStyle: textStyle.copyWith(color: theme.mutedForeground),
+                ).copyWith(counterText: '', isDense: true, filled: false),
+              ),
             ),
           ),
         ),

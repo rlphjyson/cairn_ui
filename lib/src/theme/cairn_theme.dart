@@ -292,6 +292,22 @@ class CairnTheme extends ThemeExtension<CairnTheme> {
       fontFamilyFallback: cairn.fontFamilyFallback,
       splashFactory: NoSplash.splashFactory,
       highlightColor: const Color(0x00000000),
+      // Material 3's TextField is a *filled* field by default, painting
+      // `surfaceContainerHighest` behind the text. shadcn/ui inputs are
+      // `bg-transparent` with the border doing the work, so the fill is
+      // switched off here rather than fought per-component.
+      inputDecorationTheme: const InputDecorationTheme(
+        filled: false,
+        fillColor: Color(0x00000000),
+        border: InputBorder.none,
+        enabledBorder: InputBorder.none,
+        focusedBorder: InputBorder.none,
+        disabledBorder: InputBorder.none,
+        errorBorder: InputBorder.none,
+        focusedErrorBorder: InputBorder.none,
+        isDense: true,
+        contentPadding: EdgeInsets.zero,
+      ),
       textSelectionTheme: TextSelectionThemeData(
         cursorColor: cairn.foreground,
         selectionColor: cairn.primary.withValues(alpha: 0.25),

@@ -268,7 +268,9 @@ class _CairnNavigationMenuState extends State<CairnNavigationMenu> {
           horizontal: CairnSpacing.s4,
           vertical: CairnSpacing.s2,
         ),
-        alignment: Alignment.center,
+        // No `alignment`: it would stretch this trigger to the full row width.
+        // `w-max` means width-of-content, which is what Center(widthFactor: 1)
+        // preserves while still centring vertically.
         decoration: BoxDecoration(
           color: states.hovered
               ? theme.accent
@@ -279,16 +281,19 @@ class _CairnNavigationMenuState extends State<CairnNavigationMenu> {
           borderRadius: BorderRadius.circular(theme.radiusScale.md),
           boxShadow: states.focused ? theme.focusRing : null,
         ),
-        child: Text(
-          widget.items[i].label,
-          style: theme
-              .textStyle(CairnTypography.sm)
-              .copyWith(
-                fontWeight: CairnTypography.medium,
-                color: states.hovered || active
-                    ? theme.accentForeground
-                    : theme.foreground,
-              ),
+        child: Center(
+          widthFactor: 1.0,
+          child: Text(
+            widget.items[i].label,
+            style: theme
+                .textStyle(CairnTypography.sm)
+                .copyWith(
+                  fontWeight: CairnTypography.medium,
+                  color: states.hovered || active
+                      ? theme.accentForeground
+                      : theme.foreground,
+                ),
+          ),
         ),
       );
     }

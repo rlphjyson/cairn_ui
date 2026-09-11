@@ -1,6 +1,7 @@
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
+import '../../internal/outer_shadow.dart';
 import '../../theme/cairn_theme.dart';
 import '../../tokens/motion.dart';
 import '../../tokens/shadows.dart';
@@ -226,41 +227,48 @@ class _Slot extends StatelessWidget {
         : (active ? theme.ring : theme.input);
     final double radius = theme.radiusScale.md;
 
-    return AnimatedContainer(
-      duration: CairnMotion.d150,
-      curve: CairnMotion.standard,
-      width: _size,
-      height: _size,
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-        color: isDark
-            ? theme.input.withValues(alpha: 0.3)
-            : const Color(0x00000000),
-        // Only the first slot draws a left border, so adjacent slots share one
-        // hairline instead of stacking two.
-        border: Border(
-          top: BorderSide(color: borderColor),
-          bottom: BorderSide(color: borderColor),
-          right: BorderSide(color: borderColor),
-          left: isFirst ? BorderSide(color: borderColor) : BorderSide.none,
+    final BorderRadius shape = BorderRadius.horizontal(
+      left: isFirst ? Radius.circular(radius) : Radius.zero,
+      right: isLast ? Radius.circular(radius) : Radius.zero,
+    );
+
+    // Slots are `bg-transparent` in light mode, so the active slot's 3px ring
+    // has to be clipped outside the slot or it floods the digit.
+    return CairnShadowed(
+      borderRadius: shape,
+      shadows: <BoxShadow>[
+        ...CairnShadows.xs,
+        if (active) ...(hasError ? theme.invalidRing : theme.focusRing),
+      ],
+      child: AnimatedContainer(
+        duration: CairnMotion.d150,
+        curve: CairnMotion.standard,
+        width: _size,
+        height: _size,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: isDark
+              ? theme.input.withValues(alpha: 0.3)
+              : const Color(0x00000000),
+          // Only the first slot draws a left border, so adjacent slots share one
+          // hairline instead of stacking two.
+          border: Border(
+            top: BorderSide(color: borderColor),
+            bottom: BorderSide(color: borderColor),
+            right: BorderSide(color: borderColor),
+            left: isFirst ? BorderSide(color: borderColor) : BorderSide.none,
+          ),
+          borderRadius: shape,
         ),
-        borderRadius: BorderRadius.horizontal(
-          left: isFirst ? Radius.circular(radius) : Radius.zero,
-          right: isLast ? Radius.circular(radius) : Radius.zero,
-        ),
-        boxShadow: <BoxShadow>[
-          ...CairnShadows.xs,
-          if (active) ...(hasError ? theme.invalidRing : theme.focusRing),
-        ],
+        child: char != null
+            ? Text(
+                char!,
+                style: theme
+                    .textStyle(CairnTypography.sm)
+                    .copyWith(color: theme.foreground),
+              )
+            : (active ? _Caret(color: theme.foreground) : null),
       ),
-      child: char != null
-          ? Text(
-              char!,
-              style: theme
-                  .textStyle(CairnTypography.sm)
-                  .copyWith(color: theme.foreground),
-            )
-          : (active ? _Caret(color: theme.foreground) : null),
     );
   }
 }

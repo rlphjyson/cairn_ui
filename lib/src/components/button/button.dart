@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 
 import '../../internal/interaction.dart';
+import '../../internal/outer_shadow.dart';
 import '../../theme/cairn_theme.dart';
 import '../../tokens/motion.dart';
 import '../../tokens/shadows.dart';
@@ -272,24 +273,36 @@ class CairnButton extends StatelessWidget {
       children: children,
     );
 
-    return AnimatedContainer(
-      duration: CairnMotion.d150,
-      curve: CairnMotion.standard,
-      height: _height,
-      width: size.isIcon ? _height : null,
-      padding: size.isIcon
-          ? EdgeInsets.zero
-          : EdgeInsets.symmetric(horizontal: _paddingX),
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-        color: paint.background,
-        borderRadius: BorderRadius.circular(theme.radiusScale.md),
-        border: paint.border == null
-            ? null
-            : Border.all(color: paint.border!, width: 1.0),
-        boxShadow: paint.shadow,
+    final BorderRadius radius = BorderRadius.circular(theme.radiusScale.md);
+
+    // The ghost, link and (light-mode) outline variants have no opaque fill,
+    // so the focus ring and shadow must be clipped to the outside of the box —
+    // otherwise a 3px ring paints across the whole button. See CairnShadowed.
+    return CairnShadowed(
+      borderRadius: radius,
+      shadows: paint.shadow,
+      child: AnimatedContainer(
+        duration: CairnMotion.d150,
+        curve: CairnMotion.standard,
+        height: _height,
+        width: size.isIcon ? _height : null,
+        padding: size.isIcon
+            ? EdgeInsets.zero
+            : EdgeInsets.symmetric(horizontal: _paddingX),
+        // Deliberately no `alignment`. A Container with a non-null alignment
+        // expands to fill its bounded constraints, which would make every button
+        // stretch to the width of its parent — the opposite of shadcn/ui's
+        // `inline-flex` (width-of-content) behaviour. Centring is handled by the
+        // Row's own mainAxisAlignment instead.
+        decoration: BoxDecoration(
+          color: paint.background,
+          borderRadius: radius,
+          border: paint.border == null
+              ? null
+              : Border.all(color: paint.border!, width: 1.0),
+        ),
+        child: row,
       ),
-      child: row,
     );
   }
 

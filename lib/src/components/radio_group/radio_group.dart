@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 
 import '../../internal/interaction.dart';
+import '../../internal/outer_shadow.dart';
 import '../../theme/cairn_theme.dart';
 import '../../tokens/motion.dart';
 import '../../tokens/radius.dart';
@@ -154,36 +155,41 @@ class CairnRadioItem<T> extends StatelessWidget {
         includeSemantics: false,
         onTap: () => onChanged?.call(value),
         builder: (BuildContext context, CairnStates states) {
-          final Widget control = AnimatedContainer(
-            duration: CairnMotion.d150,
-            curve: CairnMotion.standard,
-            width: _size,
-            height: _size,
-            decoration: BoxDecoration(
-              color: isDark
-                  ? theme.input.withValues(alpha: 0.3)
-                  : const Color(0x00000000),
-              borderRadius: CairnRadius.brFull,
-              border: Border.all(
-                color: states.focused ? theme.ring : theme.input,
+          // The circle is transparent in light mode, so its shadow and focus
+          // ring must be clipped outside the shape.
+          final Widget control = CairnShadowed(
+            borderRadius: CairnRadius.brFull,
+            shadows: <BoxShadow>[
+              ...CairnShadows.xs,
+              if (states.focused) ...theme.focusRing,
+            ],
+            child: AnimatedContainer(
+              duration: CairnMotion.d150,
+              curve: CairnMotion.standard,
+              width: _size,
+              height: _size,
+              decoration: BoxDecoration(
+                color: isDark
+                    ? theme.input.withValues(alpha: 0.3)
+                    : const Color(0x00000000),
+                borderRadius: CairnRadius.brFull,
+                border: Border.all(
+                  color: states.focused ? theme.ring : theme.input,
+                ),
               ),
-              boxShadow: <BoxShadow>[
-                ...CairnShadows.xs,
-                if (states.focused) ...theme.focusRing,
-              ],
-            ),
-            child: selected
-                ? Center(
-                    child: Container(
-                      width: _dotSize,
-                      height: _dotSize,
-                      decoration: BoxDecoration(
-                        color: theme.primary,
-                        borderRadius: CairnRadius.brFull,
+              child: selected
+                  ? Center(
+                      child: Container(
+                        width: _dotSize,
+                        height: _dotSize,
+                        decoration: BoxDecoration(
+                          color: theme.primary,
+                          borderRadius: CairnRadius.brFull,
+                        ),
                       ),
-                    ),
-                  )
-                : null,
+                    )
+                  : null,
+            ),
           );
 
           return Opacity(

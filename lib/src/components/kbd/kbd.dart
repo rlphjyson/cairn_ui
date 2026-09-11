@@ -34,20 +34,25 @@ class CairnKbd extends StatelessWidget {
       height: _extent,
       constraints: const BoxConstraints(minWidth: _extent),
       padding: const EdgeInsets.symmetric(horizontal: CairnSpacing.s1),
-      alignment: Alignment.center,
+      // No `alignment`: it would expand this Container to the parent's width.
+      // `Center(widthFactor: 1)` centres the glyph while still sizing to it,
+      // which is what `w-fit min-w-5` means.
       decoration: BoxDecoration(
         color: theme.muted,
         borderRadius: BorderRadius.circular(theme.radiusScale.sm),
       ),
-      child: Text(
-        label,
-        style: theme
-            .textStyle(CairnTypography.xs)
-            .copyWith(
-              fontWeight: CairnTypography.medium,
-              color: theme.mutedForeground,
-              height: CairnTypography.leadingNone,
-            ),
+      child: Center(
+        widthFactor: 1.0,
+        child: Text(
+          label,
+          style: theme
+              .textStyle(CairnTypography.xs)
+              .copyWith(
+                fontWeight: CairnTypography.medium,
+                color: theme.mutedForeground,
+                height: CairnTypography.leadingNone,
+              ),
+        ),
       ),
     );
   }

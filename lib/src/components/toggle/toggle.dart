@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 
 import '../../internal/interaction.dart';
+import '../../internal/outer_shadow.dart';
 import '../../theme/cairn_theme.dart';
 import '../../tokens/motion.dart';
 import '../../tokens/shadows.dart';
@@ -117,38 +118,48 @@ class CairnToggle extends StatelessWidget {
 
           return Opacity(
             opacity: states.disabled ? 0.5 : 1.0,
-            child: AnimatedContainer(
-              duration: CairnMotion.d150,
-              curve: CairnMotion.standard,
-              height: _extent,
-              constraints: BoxConstraints(minWidth: _extent),
-              padding: EdgeInsets.symmetric(horizontal: _paddingX),
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                color: background,
-                borderRadius: BorderRadius.circular(theme.radiusScale.md),
-                border: variant == CairnToggleVariant.outline
-                    ? Border.all(
-                        color: states.focused ? theme.ring : theme.input,
-                      )
-                    : (states.focused ? Border.all(color: theme.ring) : null),
-                boxShadow: <BoxShadow>[
-                  if (variant == CairnToggleVariant.outline) ...CairnShadows.xs,
-                  if (states.focused) ...theme.focusRing,
-                ],
-              ),
-              child: IconTheme(
-                data: IconThemeData(color: foreground, size: 16),
-                child: DefaultTextStyle(
-                  style: theme
-                      .textStyle(CairnTypography.sm)
-                      .copyWith(
-                        fontWeight: CairnTypography.medium,
-                        color: foreground,
-                      ),
-                  maxLines: 1,
-                  softWrap: false,
-                  child: child,
+            // `bg-transparent` when off: clip shadows to the exterior.
+            child: CairnShadowed(
+              borderRadius: BorderRadius.circular(theme.radiusScale.md),
+              shadows: <BoxShadow>[
+                if (variant == CairnToggleVariant.outline) ...CairnShadows.xs,
+                if (states.focused) ...theme.focusRing,
+              ],
+              child: AnimatedContainer(
+                duration: CairnMotion.d150,
+                curve: CairnMotion.standard,
+                height: _extent,
+                constraints: BoxConstraints(minWidth: _extent),
+                padding: EdgeInsets.symmetric(horizontal: _paddingX),
+                // No `alignment` here: it would make the Container expand to its
+                // parent's width instead of hugging the label. `min-w-*` is
+                // expressed by the constraints above, and the Center below keeps
+                // short labels (a single "B") centred within it.
+                decoration: BoxDecoration(
+                  color: background,
+                  borderRadius: BorderRadius.circular(theme.radiusScale.md),
+                  border: variant == CairnToggleVariant.outline
+                      ? Border.all(
+                          color: states.focused ? theme.ring : theme.input,
+                        )
+                      : (states.focused ? Border.all(color: theme.ring) : null),
+                ),
+                child: Center(
+                  widthFactor: 1.0,
+                  child: IconTheme(
+                    data: IconThemeData(color: foreground, size: 16),
+                    child: DefaultTextStyle(
+                      style: theme
+                          .textStyle(CairnTypography.sm)
+                          .copyWith(
+                            fontWeight: CairnTypography.medium,
+                            color: foreground,
+                          ),
+                      maxLines: 1,
+                      softWrap: false,
+                      child: child,
+                    ),
+                  ),
                 ),
               ),
             ),

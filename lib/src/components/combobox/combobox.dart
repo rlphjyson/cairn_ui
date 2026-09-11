@@ -6,6 +6,7 @@ import 'package:flutter/widgets.dart';
 import '../../internal/anchored_overlay.dart';
 import '../../internal/icons.dart';
 import '../../internal/interaction.dart';
+import '../../internal/outer_shadow.dart';
 import '../../internal/popover_layer.dart';
 import '../../theme/cairn_theme.dart';
 import '../../tokens/motion.dart';
@@ -162,49 +163,59 @@ class _CairnComboboxState<T> extends State<CairnCombobox<T>> {
 
           return Opacity(
             opacity: enabled ? 1.0 : 0.5,
-            child: AnimatedContainer(
-              duration: CairnMotion.d150,
-              curve: CairnMotion.standard,
-              height: 36.0,
-              width: widget.width,
-              padding: const EdgeInsets.symmetric(horizontal: CairnSpacing.s3),
-              decoration: BoxDecoration(
-                color: isDark
-                    ? theme.input.withValues(alpha: states.hovered ? 0.5 : 0.3)
-                    : (states.hovered ? theme.accent : const Color(0x00000000)),
-                borderRadius: BorderRadius.circular(theme.radiusScale.md),
-                border: Border.all(color: borderColor),
-                boxShadow: <BoxShadow>[
-                  ...CairnShadows.xs,
-                  if (states.focused)
-                    ...(widget.hasError ? theme.invalidRing : theme.focusRing),
-                ],
-              ),
-              child: Row(
-                spacing: CairnSpacing.s2,
-                children: <Widget>[
-                  Expanded(
-                    child: Text(
-                      _selected?.label ?? widget.placeholder,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: theme
-                          .textStyle(CairnTypography.sm)
-                          .copyWith(
-                            color: _selected == null
-                                ? theme.mutedForeground
-                                : theme.foreground,
-                          ),
+            // `bg-transparent` at rest: clip shadows to the exterior.
+            child: CairnShadowed(
+              borderRadius: BorderRadius.circular(theme.radiusScale.md),
+              shadows: <BoxShadow>[
+                ...CairnShadows.xs,
+                if (states.focused)
+                  ...(widget.hasError ? theme.invalidRing : theme.focusRing),
+              ],
+              child: AnimatedContainer(
+                duration: CairnMotion.d150,
+                curve: CairnMotion.standard,
+                height: 36.0,
+                width: widget.width,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: CairnSpacing.s3,
+                ),
+                decoration: BoxDecoration(
+                  color: isDark
+                      ? theme.input.withValues(
+                          alpha: states.hovered ? 0.5 : 0.3,
+                        )
+                      : (states.hovered
+                            ? theme.accent
+                            : const Color(0x00000000)),
+                  borderRadius: BorderRadius.circular(theme.radiusScale.md),
+                  border: Border.all(color: borderColor),
+                ),
+                child: Row(
+                  spacing: CairnSpacing.s2,
+                  children: <Widget>[
+                    Expanded(
+                      child: Text(
+                        _selected?.label ?? widget.placeholder,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: theme
+                            .textStyle(CairnTypography.sm)
+                            .copyWith(
+                              color: _selected == null
+                                  ? theme.mutedForeground
+                                  : theme.foreground,
+                            ),
+                      ),
                     ),
-                  ),
-                  Opacity(
-                    opacity: 0.5,
-                    child: CairnIcon(
-                      CairnIconData.chevronsUpDown,
-                      color: theme.foreground,
+                    Opacity(
+                      opacity: 0.5,
+                      child: CairnIcon(
+                        CairnIconData.chevronsUpDown,
+                        color: theme.foreground,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           );

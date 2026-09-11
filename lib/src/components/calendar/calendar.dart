@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 
 import '../../internal/icons.dart';
 import '../../internal/interaction.dart';
+import '../../internal/outer_shadow.dart';
 import '../../theme/cairn_theme.dart';
 import '../../tokens/motion.dart';
 import '../../tokens/spacing.dart';
@@ -287,25 +288,30 @@ class _DayCell extends StatelessWidget {
               : outside
               ? 0.5
               : 1.0,
-          child: AnimatedContainer(
-            duration: CairnMotion.d150,
-            curve: CairnMotion.standard,
-            width: CairnCalendar.cellSize,
-            height: CairnCalendar.cellSize,
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              color: background,
-              borderRadius: BorderRadius.circular(theme.radiusScale.md),
-              boxShadow: states.focused ? theme.focusRing : null,
-            ),
-            child: Text(
-              '${day.day}',
-              style: theme
-                  .textStyle(CairnTypography.sm)
-                  .copyWith(
-                    color: foreground,
-                    fontWeight: CairnTypography.normal,
-                  ),
+          // An unselected day cell has no fill, so the focus ring must be
+          // clipped to its exterior rather than painted across the date.
+          child: CairnShadowed(
+            borderRadius: BorderRadius.circular(theme.radiusScale.md),
+            shadows: states.focused ? theme.focusRing : const <BoxShadow>[],
+            child: AnimatedContainer(
+              duration: CairnMotion.d150,
+              curve: CairnMotion.standard,
+              width: CairnCalendar.cellSize,
+              height: CairnCalendar.cellSize,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color: background,
+                borderRadius: BorderRadius.circular(theme.radiusScale.md),
+              ),
+              child: Text(
+                '${day.day}',
+                style: theme
+                    .textStyle(CairnTypography.sm)
+                    .copyWith(
+                      color: foreground,
+                      fontWeight: CairnTypography.normal,
+                    ),
+              ),
             ),
           ),
         );

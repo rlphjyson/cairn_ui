@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 
 import '../../internal/icons.dart';
 import '../../internal/interaction.dart';
+import '../../internal/outer_shadow.dart';
 import '../../theme/cairn_theme.dart';
 import '../../tokens/motion.dart';
 import '../../tokens/spacing.dart';
@@ -145,47 +146,52 @@ class _AccordionSection extends StatelessWidget {
           onTap: onToggle,
           builder: (BuildContext context, CairnStates states) => Opacity(
             opacity: states.disabled ? 0.5 : 1.0,
-            child: Container(
-              // `py-4`.
-              padding: const EdgeInsets.symmetric(vertical: CairnSpacing.s4),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(theme.radiusScale.md),
-                boxShadow: states.focused ? theme.focusRing : null,
-              ),
-              child: Row(
-                // `items-start` keeps the chevron on the first line.
-                crossAxisAlignment: CrossAxisAlignment.start,
-                spacing: CairnSpacing.s4,
-                children: <Widget>[
-                  Expanded(
-                    child: DefaultTextStyle(
-                      style: theme
-                          .textStyle(CairnTypography.sm)
-                          .copyWith(
-                            fontWeight: CairnTypography.medium,
-                            color: theme.foreground,
-                            decoration: states.hovered
-                                ? TextDecoration.underline
-                                : null,
-                            decorationColor: theme.foreground,
-                          ),
-                      child: item.title,
-                    ),
-                  ),
-                  // `translate-y-0.5` optical nudge.
-                  Padding(
-                    padding: const EdgeInsets.only(top: 2),
-                    child: AnimatedRotation(
-                      turns: open ? 0.5 : 0.0,
-                      duration: CairnMotion.d200,
-                      curve: CairnMotion.standard,
-                      child: CairnIcon(
-                        CairnIconData.chevronDown,
-                        color: theme.mutedForeground,
+            // The trigger has no fill, so the focus ring must be clipped to
+            // its exterior or it paints over the title.
+            child: CairnShadowed(
+              borderRadius: BorderRadius.circular(theme.radiusScale.md),
+              shadows: states.focused ? theme.focusRing : const <BoxShadow>[],
+              child: Container(
+                // `py-4`.
+                padding: const EdgeInsets.symmetric(vertical: CairnSpacing.s4),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(theme.radiusScale.md),
+                ),
+                child: Row(
+                  // `items-start` keeps the chevron on the first line.
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  spacing: CairnSpacing.s4,
+                  children: <Widget>[
+                    Expanded(
+                      child: DefaultTextStyle(
+                        style: theme
+                            .textStyle(CairnTypography.sm)
+                            .copyWith(
+                              fontWeight: CairnTypography.medium,
+                              color: theme.foreground,
+                              decoration: states.hovered
+                                  ? TextDecoration.underline
+                                  : null,
+                              decorationColor: theme.foreground,
+                            ),
+                        child: item.title,
                       ),
                     ),
-                  ),
-                ],
+                    // `translate-y-0.5` optical nudge.
+                    Padding(
+                      padding: const EdgeInsets.only(top: 2),
+                      child: AnimatedRotation(
+                        turns: open ? 0.5 : 0.0,
+                        duration: CairnMotion.d200,
+                        curve: CairnMotion.standard,
+                        child: CairnIcon(
+                          CairnIconData.chevronDown,
+                          color: theme.mutedForeground,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

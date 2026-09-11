@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 
 import '../../internal/icons.dart';
 import '../../internal/interaction.dart';
+import '../../internal/outer_shadow.dart';
 import '../../theme/cairn_theme.dart';
 import '../../tokens/motion.dart';
 import '../../tokens/shadows.dart';
@@ -111,36 +112,41 @@ class CairnCheckbox extends StatelessWidget {
 
           return Opacity(
             opacity: states.disabled ? 0.5 : 1.0,
-            child: AnimatedContainer(
-              duration: CairnMotion.d150,
-              curve: CairnMotion.standard,
-              width: _size,
-              height: _size,
-              decoration: BoxDecoration(
-                color: filled
-                    ? theme.primary
-                    : (isDark
-                          ? theme.input.withValues(alpha: 0.3)
-                          : const Color(0x00000000)),
-                borderRadius: BorderRadius.circular(_radius),
-                border: Border.all(color: borderColor),
-                boxShadow: <BoxShadow>[
-                  ...CairnShadows.xs,
-                  if (states.focused)
-                    ...(hasError ? theme.invalidRing : theme.focusRing),
-                ],
+            // Unchecked in light mode the box is transparent, so the shadow
+            // and focus ring have to be clipped to its exterior.
+            child: CairnShadowed(
+              borderRadius: BorderRadius.circular(_radius),
+              shadows: <BoxShadow>[
+                ...CairnShadows.xs,
+                if (states.focused)
+                  ...(hasError ? theme.invalidRing : theme.focusRing),
+              ],
+              child: AnimatedContainer(
+                duration: CairnMotion.d150,
+                curve: CairnMotion.standard,
+                width: _size,
+                height: _size,
+                decoration: BoxDecoration(
+                  color: filled
+                      ? theme.primary
+                      : (isDark
+                            ? theme.input.withValues(alpha: 0.3)
+                            : const Color(0x00000000)),
+                  borderRadius: BorderRadius.circular(_radius),
+                  border: Border.all(color: borderColor),
+                ),
+                child: filled
+                    ? Center(
+                        child: CairnIcon(
+                          indeterminate
+                              ? CairnIconData.minus
+                              : CairnIconData.check,
+                          size: _iconSize,
+                          color: theme.primaryForeground,
+                        ),
+                      )
+                    : null,
               ),
-              child: filled
-                  ? Center(
-                      child: CairnIcon(
-                        indeterminate
-                            ? CairnIconData.minus
-                            : CairnIconData.check,
-                        size: _iconSize,
-                        color: theme.primaryForeground,
-                      ),
-                    )
-                  : null,
             ),
           );
         },

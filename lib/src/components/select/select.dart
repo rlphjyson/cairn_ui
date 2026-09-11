@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import '../../internal/anchored_overlay.dart';
 import '../../internal/icons.dart';
 import '../../internal/interaction.dart';
+import '../../internal/outer_shadow.dart';
 import '../../internal/popover_layer.dart';
 import '../../theme/cairn_theme.dart';
 import '../../tokens/motion.dart';
@@ -163,62 +164,70 @@ class _CairnSelectState<T> extends State<CairnSelect<T>> {
 
           return Opacity(
             opacity: states.disabled ? 0.5 : 1.0,
-            child: AnimatedContainer(
-              duration: CairnMotion.d150,
-              curve: CairnMotion.standard,
-              height: _height,
-              width: widget.width,
-              padding: const EdgeInsets.symmetric(horizontal: CairnSpacing.s3),
-              decoration: BoxDecoration(
-                color: isDark
-                    ? theme.input.withValues(alpha: states.hovered ? 0.5 : 0.3)
-                    : const Color(0x00000000),
-                borderRadius: BorderRadius.circular(theme.radiusScale.md),
-                border: Border.all(color: borderColor),
-                boxShadow: <BoxShadow>[
-                  ...CairnShadows.xs,
-                  if (states.focused)
-                    ...(widget.hasError ? theme.invalidRing : theme.focusRing),
-                ],
-              ),
-              child: Row(
-                mainAxisSize: widget.width == null
-                    ? MainAxisSize.min
-                    : MainAxisSize.max,
-                spacing: CairnSpacing.s2,
-                children: <Widget>[
-                  if (selected?.leading != null)
-                    IconTheme(
-                      data: IconThemeData(
-                        color: theme.mutedForeground,
-                        size: 16,
+            // `bg-transparent` in light mode: clip shadows to the exterior.
+            child: CairnShadowed(
+              borderRadius: BorderRadius.circular(theme.radiusScale.md),
+              shadows: <BoxShadow>[
+                ...CairnShadows.xs,
+                if (states.focused)
+                  ...(widget.hasError ? theme.invalidRing : theme.focusRing),
+              ],
+              child: AnimatedContainer(
+                duration: CairnMotion.d150,
+                curve: CairnMotion.standard,
+                height: _height,
+                width: widget.width,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: CairnSpacing.s3,
+                ),
+                decoration: BoxDecoration(
+                  color: isDark
+                      ? theme.input.withValues(
+                          alpha: states.hovered ? 0.5 : 0.3,
+                        )
+                      : const Color(0x00000000),
+                  borderRadius: BorderRadius.circular(theme.radiusScale.md),
+                  border: Border.all(color: borderColor),
+                ),
+                child: Row(
+                  mainAxisSize: widget.width == null
+                      ? MainAxisSize.min
+                      : MainAxisSize.max,
+                  spacing: CairnSpacing.s2,
+                  children: <Widget>[
+                    if (selected?.leading != null)
+                      IconTheme(
+                        data: IconThemeData(
+                          color: theme.mutedForeground,
+                          size: 16,
+                        ),
+                        child: selected!.leading!,
                       ),
-                      child: selected!.leading!,
+                    Flexible(
+                      child: Text(
+                        selected?.label ?? widget.placeholder,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: theme
+                            .textStyle(CairnTypography.sm)
+                            .copyWith(
+                              // `data-[placeholder]:text-muted-foreground`.
+                              color: selected == null
+                                  ? theme.mutedForeground
+                                  : theme.foreground,
+                            ),
+                      ),
                     ),
-                  Flexible(
-                    child: Text(
-                      selected?.label ?? widget.placeholder,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: theme
-                          .textStyle(CairnTypography.sm)
-                          .copyWith(
-                            // `data-[placeholder]:text-muted-foreground`.
-                            color: selected == null
-                                ? theme.mutedForeground
-                                : theme.foreground,
-                          ),
+                    // `size-4 opacity-50`.
+                    Opacity(
+                      opacity: 0.5,
+                      child: CairnIcon(
+                        CairnIconData.chevronDown,
+                        color: theme.foreground,
+                      ),
                     ),
-                  ),
-                  // `size-4 opacity-50`.
-                  Opacity(
-                    opacity: 0.5,
-                    child: CairnIcon(
-                      CairnIconData.chevronDown,
-                      color: theme.foreground,
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           );

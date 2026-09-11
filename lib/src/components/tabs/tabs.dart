@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 
 import '../../internal/interaction.dart';
+import '../../internal/outer_shadow.dart';
 import '../../theme/cairn_theme.dart';
 import '../../tokens/motion.dart';
 import '../../tokens/shadows.dart';
@@ -182,50 +183,58 @@ class _TabTrigger<T> extends StatelessWidget {
           child: Stack(
             clipBehavior: Clip.none,
             children: <Widget>[
-              AnimatedContainer(
-                duration: CairnMotion.d150,
-                curve: CairnMotion.standard,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: CairnSpacing.s2,
-                  vertical: CairnSpacing.s1,
-                ),
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  color: filled && selected
-                      ? (isDark
-                            ? theme.input.withValues(alpha: 0.3)
-                            : theme.background)
-                      : const Color(0x00000000),
-                  borderRadius: BorderRadius.circular(theme.radiusScale.md),
-                  border: Border.all(
-                    color: states.focused
-                        ? theme.ring
-                        : const Color(0x00000000),
+              CairnShadowed(
+                borderRadius: BorderRadius.circular(theme.radiusScale.md),
+                shadows: <BoxShadow>[
+                  if (filled && selected) ...CairnShadows.sm,
+                  if (states.focused) ...theme.focusRing,
+                ],
+                child: AnimatedContainer(
+                  duration: CairnMotion.d150,
+                  curve: CairnMotion.standard,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: CairnSpacing.s2,
+                    vertical: CairnSpacing.s1,
                   ),
-                  boxShadow: <BoxShadow>[
-                    if (filled && selected) ...CairnShadows.sm,
-                    if (states.focused) ...theme.focusRing,
-                  ],
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  spacing: CairnSpacing.s1p5,
-                  children: <Widget>[
-                    if (tab.icon != null)
-                      IconTheme(
-                        data: IconThemeData(color: foreground, size: 16),
-                        child: SizedBox.square(dimension: 16, child: tab.icon),
-                      ),
-                    DefaultTextStyle(
-                      style: theme
-                          .textStyle(CairnTypography.sm)
-                          .copyWith(
-                            fontWeight: CairnTypography.medium,
-                            color: foreground,
-                          ),
-                      child: tab.label,
+                  // No `alignment`: a Container with one expands to fill bounded
+                  // constraints, which would stretch every trigger to the track
+                  // width even when `expand` is false. The Row below centres.
+                  decoration: BoxDecoration(
+                    color: filled && selected
+                        ? (isDark
+                              ? theme.input.withValues(alpha: 0.3)
+                              : theme.background)
+                        : const Color(0x00000000),
+                    borderRadius: BorderRadius.circular(theme.radiusScale.md),
+                    border: Border.all(
+                      color: states.focused
+                          ? theme.ring
+                          : const Color(0x00000000),
                     ),
-                  ],
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    spacing: CairnSpacing.s1p5,
+                    children: <Widget>[
+                      if (tab.icon != null)
+                        IconTheme(
+                          data: IconThemeData(color: foreground, size: 16),
+                          child: SizedBox.square(
+                            dimension: 16,
+                            child: tab.icon,
+                          ),
+                        ),
+                      DefaultTextStyle(
+                        style: theme
+                            .textStyle(CairnTypography.sm)
+                            .copyWith(
+                              fontWeight: CairnTypography.medium,
+                              color: foreground,
+                            ),
+                        child: tab.label,
+                      ),
+                    ],
+                  ),
                 ),
               ),
               // The line variant's underline: `after:bottom-[-5px] h-0.5`.

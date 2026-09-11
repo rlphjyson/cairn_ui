@@ -1,0 +1,23 @@
+name: cairn_ui_example
+description: >-
+  The Cairn UI component catalogue - a runnable showcase of every component in
+  both light and dark themes.
+publish_to: none
+version: 1.0.0
+
+environment:
+  sdk: ^3.9.0
+
+dependencies:
+  cairn_ui:
+    path: ../
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_lints: ^6.0.0
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true
