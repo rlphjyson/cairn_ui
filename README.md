@@ -434,7 +434,8 @@ projects define.
 - **[Lucide](https://lucide.dev)** — the icon geometry redrawn in
   `lib/src/internal/icons.dart`. ISC licensed.
 
-Cairn is not affiliated with or endorsed by any of them.
+Cairn is not affiliated with or endorsed by any of them. Full third-party
+attribution is in [NOTICE.md](NOTICE.md).
 
 ## Licence
 

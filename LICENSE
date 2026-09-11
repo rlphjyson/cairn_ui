@@ -19,13 +19,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-
----
-
-This package bundles the Geist typeface under `test/fonts/`, used only to make
-golden tests deterministic. Geist is (c) Vercel, Inc. and is licensed under the
-SIL Open Font License 1.1. Its full licence text is at
-`test/fonts/OFL.txt`.
-
-Cairn UI is an independent implementation. It contains no code from shadcn/ui
-or Radix UI; see the "Credit" section of README.md.

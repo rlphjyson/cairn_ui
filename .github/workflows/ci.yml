@@ -100,9 +100,9 @@ jobs:
         run: |
           set -o pipefail
           # --exit-code-threshold is the number of points that may be lost
-          # before the step fails. Platform/dependency checks that need a
-          # published version of the package account for the small gap.
-          pana --no-warning --exit-code-threshold 10 . 2>&1 | tee pana.log
+          # before the step fails. Zero: the package is expected to score a
+          # perfect 160/160 on pub.dev.
+          pana --no-warning --exit-code-threshold 0 . 2>&1 | tee pana.log
           echo "--- summary ---"
           grep -E "^Points|^\s*\[.\]" pana.log | tail -40 || true
 
