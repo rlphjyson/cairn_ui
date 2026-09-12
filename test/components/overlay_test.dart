@@ -398,6 +398,44 @@ void main() {
       expect(find.text('React'), findsOneWidget);
       expect(find.text('Flutter'), findsNothing);
     });
+
+    testWidgets('opens a menu the width of its trigger, not the viewport', (
+      WidgetTester tester,
+    ) async {
+      // Regression: matchAnchorWidth used to set only a minimum width. Menu
+      // rows lay out at mainAxisSize.max, so a loose upper bound let the panel
+      // expand to the whole overlay — a 130px select opened a full-width menu.
+      const double triggerWidth = 130.0;
+
+      await tester.pumpWidget(
+        harness(
+          child: CairnSelect<String>(
+            placeholder: 'Accent',
+            width: triggerWidth,
+            options: const <CairnSelectOption<String>>[
+              CairnSelectOption<String>(value: 'neutral', label: 'Neutral'),
+              CairnSelectOption<String>(value: 'blue', label: 'Blue'),
+            ],
+            onChanged: (String _) {},
+          ),
+        ),
+      );
+
+      await tester.tap(find.text('Accent'));
+      await tester.pumpAndSettle();
+
+      final double menuWidth = tester
+          .getSize(
+            find.ancestor(
+              of: find.text('Neutral'),
+              matching: find.byType(CairnMenuPanel),
+            ),
+          )
+          .width;
+
+      expect(menuWidth, triggerWidth);
+      expect(menuWidth, lessThan(tester.view.physicalSize.width));
+    });
   });
 
   group('CairnCommand', () {

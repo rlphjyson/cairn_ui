@@ -81,10 +81,18 @@ class CairnPopoverLayout extends SingleChildLayoutDelegate {
   /// Minimum distance to keep from the viewport edges.
   final double viewportPadding;
 
-  /// Whether the surface should be at least as wide as the anchor.
+  /// Whether the surface should take the anchor's width.
   ///
   /// Select sets this so its menu lines up with its trigger: a menu narrower
-  /// than the control that opened it reads as a misplaced tooltip.
+  /// than the control that opened it reads as a misplaced tooltip, and one
+  /// wider than it reads as a different surface entirely.
+  ///
+  /// This constrains the width on both sides rather than only setting a floor.
+  /// A floor alone is not enough: menu rows lay out at `mainAxisSize.max`, so
+  /// with a loose upper bound they expand to whatever maximum they are handed —
+  /// which is the whole viewport, not the anchor. The cost of pinning both
+  /// sides is that an option longer than the trigger wraps or ellipsizes
+  /// instead of widening the menu, which is what a native select does anyway.
   final bool matchAnchorWidth;
 
   @override
@@ -106,9 +114,13 @@ class CairnPopoverLayout extends SingleChildLayoutDelegate {
       _ => available,
     };
 
+    final double anchorWidth = anchorRect.width.clamp(0.0, maxWidth);
+
     return BoxConstraints(
-      minWidth: matchAnchorWidth ? anchorRect.width.clamp(0.0, maxWidth) : 0.0,
-      maxWidth: maxWidth.clamp(0.0, double.infinity),
+      minWidth: matchAnchorWidth ? anchorWidth : 0.0,
+      maxWidth: matchAnchorWidth
+          ? anchorWidth
+          : maxWidth.clamp(0.0, double.infinity),
       maxHeight: <double>[available, flippedAvailable]
           .reduce((double a, double b) => a > b ? a : b)
           .clamp(0.0, double.infinity),

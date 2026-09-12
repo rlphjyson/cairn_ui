@@ -4,9 +4,17 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## Unreleased
+## 0.1.1
 
 ### Fixed
+
+- `CairnSelect` and `CairnCombobox` opened a menu as wide as the viewport
+  instead of as wide as their trigger. `matchAnchorWidth` set only a *minimum*
+  width; menu rows lay out at `mainAxisSize.max`, so with a loose upper bound
+  the panel expanded to fill whatever maximum it was handed — the whole overlay.
+  The width is now pinned on both sides, so the menu takes the anchor's width.
+  An option longer than the trigger now wraps or ellipsizes rather than
+  widening the menu, which is what a native select does.
 
 - `CairnContextMenu` threw "Looking up a deactivated widget's ancestor is
   unsafe" when it was disposed without ever having been opened. Its

@@ -2,7 +2,7 @@ name: cairn_ui
 description: >-
   A modern, accessible Flutter component library: 45 widgets on an engineered
   token system with OKLCH colors, light and dark themes, and golden tests.
-version: 0.1.0
+version: 0.1.1
 repository: https://github.com/rlphjyson/cairn_ui
 issue_tracker: https://github.com/rlphjyson/cairn_ui/issues
 documentation: https://github.com/rlphjyson/cairn_ui#readme
