@@ -65,6 +65,9 @@ enum CairnIconData {
 
   /// Lucide `info` — an informational Toast.
   info,
+
+  /// Lucide `plus` — the Floating Action Button trigger.
+  plus,
 }
 
 /// Draws one of Cairn's built-in [CairnIconData] glyphs.
@@ -249,6 +252,11 @@ class _CairnIconPainter extends CustomPainter {
       case CairnIconData.dot:
         // The Radio indicator is a filled circle, `size-2 fill-primary`.
         canvas.drawCircle(const Offset(12, 12), 10, fill);
+
+      case CairnIconData.plus:
+        canvas
+          ..drawLine(const Offset(5, 12), const Offset(19, 12), stroke)
+          ..drawLine(const Offset(12, 5), const Offset(12, 19), stroke);
 
       case CairnIconData.minus:
         canvas.drawLine(const Offset(5, 12), const Offset(19, 12), stroke);

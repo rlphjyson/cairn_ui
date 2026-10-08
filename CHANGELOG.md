@@ -4,6 +4,29 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.2.0
+
+### Added
+
+- 20 components ported from daisyUI's catalogue onto the Cairn token system:
+  `CairnStat` / `CairnStats`, `CairnStatus`, `CairnSteps`, `CairnTimeline`,
+  `CairnChatBubble`, `CairnRating`, `CairnRadialProgress`, `CairnCountdown`,
+  `CairnIndicator`, `CairnStack`, `CairnSwap`, `CairnNavbar`, `CairnDock`,
+  `CairnHero`, `CairnDiff`, `CairnFileInput`, `CairnList` / `CairnListItem`,
+  `CairnLink`, `CairnFab` (with speed dial) and the `CairnMockup*` frames
+  (window, browser, code, phone).
+- `CairnTone` and `CairnToneColors`: `success`, `warning` and `info` intents
+  alongside `primary`, `secondary` and `destructive`, authored in OKLCH with
+  light and dark values.
+- `CairnIconData.plus`.
+- An "Extended" section in the example catalogue.
+- 42 behaviour tests in `test/components/extended_test.dart` and 14 golden
+  sheets (light and dark) in `test/goldens/extended_goldens_test.dart`.
+
+### Notes
+
+- No existing component, token or theme value changed.
+
 ## 0.1.1
 
 ### Fixed

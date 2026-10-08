@@ -5,7 +5,7 @@ that is actually engineered: colours authored in OKLCH with a matched dark
 theme, a radius scale derived proportionally from a single number, a type scale
 that survives text scaling, and golden tests holding all of it in place.
 
-45 components. No runtime dependencies beyond Flutter itself.
+65 components. No runtime dependencies beyond Flutter itself.
 
 **Documentation site: <https://rlphjyson.github.io/cairn_site/>** — every
 component live and interactive, plus composed blocks, charts and a typography
@@ -399,6 +399,36 @@ pass.
 | Toast | Host outlives the route that fired it |
 | Toggle / Toggle Group | Single and multiple, joined or spaced |
 | Tooltip | Opens on hover *and* keyboard focus |
+| Chat Bubble | Sent and received, 75% width cap, squared sender corner |
+| Countdown | Tabular digits so a ticking value never jitters |
+| Dock | Bottom navigation, 64px, whole item is the tap target |
+| Diff | Before/after divider; drag or arrow keys |
+| FAB | Optional speed dial with labelled mini actions |
+| File Input | Draws the control; you supply the picker |
+| Hero | Landing-page header with a 36rem measure |
+| Indicator | Pins a badge to a corner without affecting layout |
+| Link | Underline on hover and focus |
+| List | Leading / title / subtitle / trailing rows |
+| Mockups | Window, browser, code and phone frames |
+| Navbar | Truly-centred middle region |
+| Radial Progress | Ring analogue of Progress |
+| Rating | Half stars, keyboard stepping, read-only mode |
+| Stack | Overlapping layers, or an avatar pile |
+| Stat / Stats | Headline figure with a divided group |
+| Status | Tone dot with optional ping |
+| Steps | Horizontal or vertical, tappable once complete |
+| Swap | Two-face toggle: fade, rotate or flip |
+| Timeline | Marker rail with a connecting hairline |
+
+**Extended components** (since 0.2.0) — the 20 rows from Chat Bubble to
+Timeline in the table above are ported from [daisyUI](https://daisyui.com/)'s
+catalogue, for the shapes shadcn/ui does not have (Stat, Steps, Timeline,
+Rating, Dock and so on). Only the *idea* is borrowed: every one is built from
+Cairn's tokens, so it themes, scales and goes dark with everything else.
+daisyUI's own colour names are not used; where state needs a colour beyond
+`primary` and `destructive`, `CairnTone` adds `success`, `warning` and `info`
+as part of the token layer. Colours come from the same OKLCH pipeline and have
+light and dark values.
 
 ### What this library deliberately does not do
 
@@ -415,10 +445,24 @@ Lucide's geometry with a `CustomPainter`.
 
 ---
 
+## Roadmap
+
+- **Flutter web and mobile templates on Cairn Site.** The
+  [documentation site](https://rlphjyson.github.io/cairn_site/) will gain
+  ready-to-use starter templates built on this library — a Flutter **web** set
+  (landing page, dashboard, docs shell, auth screens) and a Flutter **mobile**
+  set (onboarding, tab-bar app shell with the Dock, settings, chat). Each will
+  be copy-and-run, themed entirely by `CairnTheme`, with light and dark
+  included. The Extended components (Navbar, Dock, Hero, Stats, Steps, Chat
+  Bubble, List) exist largely to make those templates possible without
+  one-off widgets. Not yet released; nothing in the package depends on it.
+
+---
+
 ## Testing
 
 ```bash
-flutter test                 # 115 tests
+flutter test                 # 172 tests
 flutter analyze --fatal-infos --fatal-warnings
 dart format --set-exit-if-changed .
 ```

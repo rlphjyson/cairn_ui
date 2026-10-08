@@ -2,6 +2,7 @@ import 'package:cairn_ui/cairn_ui.dart';
 import 'package:flutter/material.dart';
 
 import 'sections/display_section.dart';
+import 'sections/extended_section.dart';
 import 'sections/feedback_section.dart';
 import 'sections/forms_section.dart';
 import 'sections/navigation_section.dart';
@@ -145,6 +146,15 @@ class _CatalogHomeState extends State<CatalogHome> {
           'Progress, Toast notifications, Data Table, Calendar and Date '
           'Picker.',
       builder: FeedbackSection.build,
+    ),
+    CatalogSection(
+      title: 'Extended',
+      description:
+          'Stat, Status, Steps, Timeline, Chat Bubble, Rating, Radial '
+          'Progress, Countdown, Indicator, Stack, Swap, Navbar, Dock, Hero, '
+          'Diff, File Input, List, Link, FAB and the Mockups — ported from '
+          'daisyUI onto the Cairn tokens.',
+      builder: ExtendedSection.build,
     ),
     CatalogSection(
       title: 'Tokens',
